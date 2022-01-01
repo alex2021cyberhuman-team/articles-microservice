@@ -33,6 +33,6 @@ public class CreateArticle
 
         public string Body { get; set; } = string.Empty;
 
-        public HashSet<string>? TagList { get; set; }
+        public HashSet<string> TagList { get; set; } = new();
     }
 }

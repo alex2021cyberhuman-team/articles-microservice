@@ -29,7 +29,7 @@ public class ArticleModel
         Author = author;
     }
 
-    public string Slug { get; init; }
+    public string Slug { get; set; }
 
     public string Title { get; set; }
 

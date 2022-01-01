@@ -3,10 +3,10 @@
 public interface IArticleWriteRepository
 {
     Task<SingleArticle> CreateAsync(
-        CreateArticle article,
+        CreateArticle.Request article,
         CancellationToken cancellationToken = default);
     
     Task<SingleArticle> UpdateAsync(
-        UpdateArticle article,
+        UpdateArticle.Request article,
         CancellationToken cancellationToken = default);
 }

@@ -5,21 +5,24 @@ namespace Conduit.Articles.DomainLayer;
 
 public class UpdateArticle
 {
-    public UpdateArticle(
-        RequestBody body,
-        Guid userId,
-        string slug)
+    public class Request
     {
-        Body = body;
-        UserId = userId;
-        Slug = slug;
+        public Request(
+            RequestBody body,
+            Guid userId,
+            string slug)
+        {
+            Body = body;
+            UserId = userId;
+            Slug = slug;
+        }
+
+        public RequestBody Body { get; set; }
+
+        public Guid UserId { get; set; }
+
+        public string Slug { get; set; }
     }
-
-    public RequestBody Body { get; set; }
-
-    public Guid UserId { get; set; }
-
-    public string Slug { get; set; }
 
     public class RequestBody
     {
