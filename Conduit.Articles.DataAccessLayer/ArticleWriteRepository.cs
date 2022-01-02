@@ -26,7 +26,7 @@ public class ArticleWriteRepository : IArticleWriteRepository
         var author =
             await _context.Author.FindAsync(new object[] { article.UserId },
                 cancellationToken);
-        var tags = await RetriveTagsAsync(cancellationToken, model.TagList);
+        var tags = await GetTagsAsync(model.TagList, cancellationToken);
 
         var articleDbModel = new ArticleDbModel
         {
@@ -57,7 +57,7 @@ public class ArticleWriteRepository : IArticleWriteRepository
             await _context.Database.BeginTransactionAsync(cancellationToken);
         var model = article.Body.Article;
 
-        var tags = await UpdateTags(cancellationToken, model, old);
+        var tags = await UpdateTagsAsync(model, old, cancellationToken);
 
         var articleDbModel = new ArticleDbModel
         {
@@ -94,20 +94,19 @@ public class ArticleWriteRepository : IArticleWriteRepository
             : old.Slug;
     }
 
-    private async Task<ICollection<TagDbModel>> UpdateTags(
-        CancellationToken cancellationToken,
+    private async Task<ICollection<TagDbModel>> UpdateTagsAsync(
         UpdateArticle.Model model,
-        ArticleDbModel old)
+        ArticleDbModel old,
+        CancellationToken cancellationToken)
     {
         var tags = model.TagList is null
             ? old.Tags
-            : await RetriveTagsAsync(cancellationToken, model.TagList);
+            : await GetTagsAsync(model.TagList, cancellationToken);
         return tags;
     }
 
-    private async Task<List<TagDbModel>> RetriveTagsAsync(
-        CancellationToken cancellationToken,
-        IEnumerable<string> tagList)
+    private async Task<List<TagDbModel>> GetTagsAsync(
+        IEnumerable<string> tagList, CancellationToken cancellationToken)
     {
         var tagListClone = tagList.ToHashSet();
         var tags = await _context.Tag.Where(x => tagListClone.Contains(x.Name))
