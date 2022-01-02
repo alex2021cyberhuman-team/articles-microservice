@@ -1,15 +1,27 @@
-﻿namespace Conduit.Articles.DomainLayer;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Conduit.Articles.DomainLayer;
 
 public static class FindArticle
 {
     public class Request
     {
         public Request(
-            string slug)
+            QueryParams query,
+            Guid currentUserId)
         {
-            Slug = slug;
+            Query = query;
+            CurrentUserId = currentUserId;
         }
-        
-        public string Slug { get; set; }
+
+        public QueryParams Query{ get; set; }
+
+        public Guid CurrentUserId { get; set; }
+    }
+    
+    public class QueryParams
+    {
+        [Required]
+        public string Slug { get; set; } = string.Empty;
     }
 }

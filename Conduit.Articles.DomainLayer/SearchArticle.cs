@@ -13,6 +13,8 @@ public static class SearchArticle
         }
 
         public QueryParams Query { get; set; }
+
+        public Guid CurrentUserId { get; set; }
     }
     
     public class QueryParams

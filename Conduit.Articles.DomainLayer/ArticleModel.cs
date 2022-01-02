@@ -29,15 +29,19 @@ public class ArticleModel
         Author = author;
     }
 
-    public string Slug { get; set; }
+    public ArticleModel()
+    {
+    }
 
-    public string Title { get; set; }
+    public string Slug { get; set; } = string.Empty;
 
-    public string Description { get; set; }
+    public string Title { get; set; } = string.Empty;
 
-    public string Body { get; set; }
+    public string Description { get; set; } = string.Empty;
 
-    public ISet<string> TagList { get; set; }
+    public string Body { get; set; } = string.Empty;
+
+    public ISet<string> TagList { get; set; } = new HashSet<string>();
 
     public DateTime CreatedAt { get; set; }
 
@@ -48,7 +52,7 @@ public class ArticleModel
 
     public int FavoritesCount { get; set; }
 
-    public AuthorModel Author { get; set; }
+    public AuthorModel Author { get; set; } = new();
 }
 
 /*

@@ -14,7 +14,11 @@ public class AuthorModel
         Following = following;
     }
 
-    public string Username { get; set; }
+    public AuthorModel()
+    {
+    }
+
+    public string Username { get; set; } = string.Empty;
 
     public string? Bio { get; set; }
 
