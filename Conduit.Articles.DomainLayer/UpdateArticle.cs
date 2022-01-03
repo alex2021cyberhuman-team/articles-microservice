@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Conduit.Shared.Validation;
 
 namespace Conduit.Articles.DomainLayer;
 
@@ -17,6 +16,7 @@ public static class UpdateArticle
             Slug = slug;
         }
 
+        [NestedValidation]
         public RequestBody Body { get; set; }
 
         public Guid UserId { get; set; }
@@ -26,6 +26,7 @@ public static class UpdateArticle
 
     public class RequestBody
     {
+        [NestedValidation]
         public Model Article { get; set; } = new();
     }
 
