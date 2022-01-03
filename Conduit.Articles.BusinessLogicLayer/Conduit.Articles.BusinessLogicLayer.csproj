@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\auth-microservice\shared-core\Conduit.Shared\Conduit.Shared.csproj" />
     <ProjectReference Include="..\Conduit.Articles.DomainLayer\Conduit.Articles.DomainLayer.csproj" />
   </ItemGroup>
 
