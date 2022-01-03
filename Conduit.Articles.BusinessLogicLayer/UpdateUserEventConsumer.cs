@@ -1,12 +1,22 @@
-﻿using Conduit.Shared.Events.Services;
+﻿using Conduit.Articles.DomainLayer;
+using Conduit.Shared.Events.Models.Users.Update;
+using Conduit.Shared.Events.Services;
 
 namespace Conduit.Articles.BusinessLogicLayer;
 
-public class UpdateUserEventConsumer : IEventConsumer<UpdateUserEventConsumer>
+public class UpdateUserEventConsumer : IEventConsumer<UpdateUserEventModel>
 {
-    public Task ConsumeAsync(
-        UpdateUserEventConsumer message)
+    private readonly IAuthorConsumerRepository _authorConsumerRepository;
+
+    public UpdateUserEventConsumer(
+        IAuthorConsumerRepository authorConsumerRepository)
     {
-        throw new NotImplementedException();
+        _authorConsumerRepository = authorConsumerRepository;
+    }
+
+    public async Task ConsumeAsync(
+        UpdateUserEventModel message)
+    {
+        await _authorConsumerRepository.UpdateAsync(message);
     }
 }
