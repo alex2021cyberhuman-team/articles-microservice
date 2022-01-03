@@ -61,7 +61,6 @@ public class ArticleWriteRepository : IArticleWriteRepository
 
         var articleDbModel = new ArticleDbModel
         {
-            CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
             AuthorId = article.UserId,
             Body = model.Body ?? old.Body,
