@@ -1,13 +1,23 @@
-﻿using Conduit.Shared.Events.Models.Profiles.RemoveFollowing;
+﻿using Conduit.Articles.DomainLayer;
+using Conduit.Shared.Events.Models.Profiles.RemoveFollowing;
 using Conduit.Shared.Events.Services;
 
 namespace Conduit.Articles.BusinessLogicLayer;
 
 public class RemoveFollowingEventConsumer : IEventConsumer<RemoveFollowingEventModel>
 {
-    public Task ConsumeAsync(
+    private readonly IFollowingsConsumerRepository
+        _followingsConsumerRepository;
+
+    public RemoveFollowingEventConsumer(
+        IFollowingsConsumerRepository followingsConsumerRepository)
+    {
+        _followingsConsumerRepository = followingsConsumerRepository;
+    }
+
+    public async Task ConsumeAsync(
         RemoveFollowingEventModel message)
     {
-        throw new NotImplementedException();
+        await _followingsConsumerRepository.RemoveAsync(message);
     }
 }
