@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Conduit.Shared.Validation;
 
 namespace Conduit.Articles.DomainLayer;
@@ -17,18 +15,22 @@ public static class CreateArticle
     {
         public Request(
             RequestBody body,
-            Guid userId)
+            string currentUsername,
+            Guid currentUserId)
         {
             Body = body;
-            UserId = userId;
+            CurrentUsername = currentUsername;
+            CurrentUserId = currentUserId;
         }
 
         [NestedValidation]
         public RequestBody Body { get; set; }
 
-        public Guid UserId { get; set; }
+        public string CurrentUsername { get; set; }
+
+        public Guid CurrentUserId { get; set; }
     }
-    
+
     public class Model
     {
         [Required]
