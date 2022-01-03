@@ -50,23 +50,26 @@ public class ArticleWriteRepository : IArticleWriteRepository
         UpdateArticle.Request article,
         CancellationToken cancellationToken = default)
     {
-        var old =
+        var oldArticleDbModel =
             await FindArticleDbModelAsync(article.Slug, cancellationToken);
+        CheckAccess(article.CurrentUserId, oldArticleDbModel);
 
         await using var transaction =
             await _context.Database.BeginTransactionAsync(cancellationToken);
         var model = article.Body.Article;
 
-        var tags = await UpdateTagsAsync(model, old, cancellationToken);
+        var tags =
+            await UpdateTagsAsync(model, oldArticleDbModel, cancellationToken);
 
         var articleDbModel = new ArticleDbModel
         {
             UpdatedAt = DateTime.UtcNow,
             AuthorId = article.CurrentUserId,
-            Body = model.Body ?? old.Body,
-            Description = model.Description ?? old.Description,
-            Title = model.Title ?? old.Title,
-            Slug = UpdateSlug(model, old),
+            Body = model.Body ?? oldArticleDbModel.Body,
+            Description =
+                model.Description ?? oldArticleDbModel.Description,
+            Title = model.Title ?? oldArticleDbModel.Title,
+            Slug = UpdateSlug(model, oldArticleDbModel),
             Tags = tags
         };
 
@@ -80,10 +83,21 @@ public class ArticleWriteRepository : IArticleWriteRepository
         DeleteArticle.Request article,
         CancellationToken cancellationToken = default)
     {
-        var model =
+        var articleDbModel =
             await FindArticleDbModelAsync(article.Slug, cancellationToken);
-        _context.Remove(model);
+        CheckAccess(article.CurrentUserId, articleDbModel);
+        _context.Remove(articleDbModel);
         await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public static void CheckAccess(
+        Guid userId,
+        ArticleDbModel articleDbModel)
+    {
+        if (articleDbModel.Author.Id != userId)
+        {
+            throw new ForbiddenException();
+        }
     }
 
     private async Task<ArticleDbModel> FindArticleDbModelAsync(
