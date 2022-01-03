@@ -2,7 +2,7 @@
 
 namespace Conduit.Articles.DomainLayer;
 
-public static class SearchArticle
+public static class SearchArticles
 {
     public class Request
     {

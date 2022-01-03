@@ -6,6 +6,6 @@ namespace Conduit.Articles.DomainLayer;
 public interface IArticleUpdater
 {
     Task<SingleArticle> UpdateAsync(
-        UpdateArticle article,
+        UpdateArticle.Request article,
         CancellationToken cancellationToken);
 }

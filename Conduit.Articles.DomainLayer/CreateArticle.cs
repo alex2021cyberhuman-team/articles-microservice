@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Conduit.Articles.DomainLayer;
 
-public class CreateArticle
+public static class CreateArticle
 {
     public class RequestBody
     {

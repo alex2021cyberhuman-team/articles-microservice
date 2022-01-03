@@ -13,7 +13,7 @@ public class ArticleUpdater : IArticleUpdater
     }
     
     public async Task<SingleArticle> UpdateAsync(
-        UpdateArticle article,
+        UpdateArticle.Request article,
         CancellationToken cancellationToken)
     {
         // валидация

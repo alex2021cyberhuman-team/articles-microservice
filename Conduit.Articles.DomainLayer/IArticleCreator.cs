@@ -6,6 +6,6 @@ namespace Conduit.Articles.DomainLayer;
 public interface IArticleCreator
 {
     Task<SingleArticle> CreateAsync(
-        CreateArticle article,
+        CreateArticle.Request article,
         CancellationToken cancellationToken);
 }

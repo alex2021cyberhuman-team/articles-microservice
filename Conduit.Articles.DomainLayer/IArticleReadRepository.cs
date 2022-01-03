@@ -7,7 +7,7 @@ public interface IArticleReadRepository
         CancellationToken cancellationToken = default);
 
     Task<MultipleArticles> SearchAsync(
-        SearchArticle.Request request,
+        SearchArticles.Request request,
         CancellationToken cancellationToken = default);
 
     Task<MultipleArticles> FeedAsync(

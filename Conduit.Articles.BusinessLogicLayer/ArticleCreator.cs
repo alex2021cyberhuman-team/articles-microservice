@@ -13,7 +13,7 @@ public class ArticleCreator : IArticleCreator
     }
 
     public async Task<SingleArticle> CreateAsync(
-        CreateArticle article,
+        CreateArticle.Request article,
         CancellationToken cancellationToken)
     {
         // валидация 

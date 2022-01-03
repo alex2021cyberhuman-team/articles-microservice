@@ -54,7 +54,7 @@ public class ArticleReadRepository : IArticleReadRepository
     }
 
     public async Task<MultipleArticles> SearchAsync(
-        SearchArticle.Request request,
+        SearchArticles.Request request,
         CancellationToken cancellationToken = default)
     {
         var query = Include(request.CurrentUserId);
@@ -85,7 +85,7 @@ public class ArticleReadRepository : IArticleReadRepository
     }
 
     private static IQueryable<ArticleDbModel> FilterQuery(
-        SearchArticle.Request request,
+        SearchArticles.Request request,
         IQueryable<ArticleDbModel> query)
     {
         return query.Where(x =>
