@@ -14,11 +14,11 @@ public static class FindArticle
             CurrentUserId = currentUserId;
         }
 
-        public QueryParams Query{ get; set; }
+        public QueryParams Query { get; set; }
 
         public Guid CurrentUserId { get; set; }
     }
-    
+
     public class QueryParams
     {
         [Required]

@@ -2,13 +2,14 @@
 
 public class SingleArticle
 {
-    public SingleArticle(ArticleModel article)
+    public SingleArticle(
+        ArticleModel article)
     {
         Response = new(article);
     }
-    
+
     public ResponseBody Response { get; set; }
-    
+
     public class ResponseBody
     {
         public ResponseBody(

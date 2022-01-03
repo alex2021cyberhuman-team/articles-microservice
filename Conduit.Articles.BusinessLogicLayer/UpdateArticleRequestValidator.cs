@@ -3,8 +3,7 @@ using Conduit.Articles.DomainLayer;
 
 namespace Conduit.Articles.BusinessLogicLayer;
 
-public class
-    UpdateArticleRequestValidator : IValidator<UpdateArticle.Request>
+public class UpdateArticleRequestValidator : IValidator<UpdateArticle.Request>
 {
     public Task<ICollection<ValidationResult>> ValidateAsync(
         UpdateArticle.Request entityToValidate,

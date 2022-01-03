@@ -4,7 +4,8 @@ using Conduit.Shared.Events.Services;
 
 namespace Conduit.Articles.BusinessLogicLayer;
 
-public class CreateFollowingEventConsumer : IEventConsumer<CreateFollowingEventModel>
+public class
+    CreateFollowingEventConsumer : IEventConsumer<CreateFollowingEventModel>
 {
     private readonly IFollowingsConsumerRepository
         _followingsConsumerRepository;

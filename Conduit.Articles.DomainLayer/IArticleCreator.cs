@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace Conduit.Articles.DomainLayer;
+﻿namespace Conduit.Articles.DomainLayer;
 
 public interface IArticleCreator
 {

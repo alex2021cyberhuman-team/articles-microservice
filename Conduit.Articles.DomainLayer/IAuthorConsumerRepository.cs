@@ -7,7 +7,7 @@ public interface IAuthorConsumerRepository
 {
     Task RegisterAsync(
         RegisterUserEventModel model);
-    
+
     Task UpdateAsync(
         UpdateUserEventModel model);
 }

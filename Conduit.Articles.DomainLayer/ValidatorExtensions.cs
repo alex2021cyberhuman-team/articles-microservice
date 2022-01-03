@@ -7,7 +7,8 @@ public static class ValidatorExtensions
         T entityToValidate,
         CancellationToken cancellationToken = default)
     {
-        var results = await validator.ValidateAsync(entityToValidate, cancellationToken);
+        var results =
+            await validator.ValidateAsync(entityToValidate, cancellationToken);
         if (results.Any())
         {
             throw new InvalidRequestException(results);

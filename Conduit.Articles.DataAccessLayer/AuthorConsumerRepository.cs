@@ -17,7 +17,7 @@ public class AuthorConsumerRepository : IAuthorConsumerRepository
     public async Task RegisterAsync(
         RegisterUserEventModel model)
     {
-        var authorDbModel = new AuthorDbModel()
+        var authorDbModel = new AuthorDbModel
         {
             Id = model.Id,
             Username = model.Username,
@@ -31,7 +31,7 @@ public class AuthorConsumerRepository : IAuthorConsumerRepository
     public async Task UpdateAsync(
         UpdateUserEventModel model)
     {
-        var authorDbModel = new AuthorDbModel()
+        var authorDbModel = new AuthorDbModel
         {
             Id = model.Id,
             Username = model.Username,
