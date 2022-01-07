@@ -2,7 +2,7 @@
 
 namespace Conduit.Articles.DomainLayer;
 
-public interface IFavoritesRepository
+public interface IFavoritesConsumerRepository
 {
     Task FavoriteAsync(
         FavoriteArticleEventModel model);

@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Conduit.Articles.DataAccessLayer;
 
-public class FavoritesRepository : IFavoritesRepository
+public class FavoritesConsumerRepository : IFavoritesConsumerRepository
 {
     private readonly ArticlesDbContext _articlesDbContext;
 
-    public FavoritesRepository(
+    public FavoritesConsumerRepository(
         ArticlesDbContext articlesDbContext)
     {
         _articlesDbContext = articlesDbContext;
