@@ -31,8 +31,7 @@ public class ArticleUpdater : IArticleUpdater
         await ProduceEvent(singleArticle);
         return singleArticle;
     }
-
-
+    
     private async Task ProduceEvent(
         SingleArticle singleArticle)
     {
