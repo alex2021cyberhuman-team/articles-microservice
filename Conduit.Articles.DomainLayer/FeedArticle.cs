@@ -18,12 +18,12 @@ public static class FeedArticle
 
         public Guid CurrentUserId { get; set; }
     }
-    
+
     public class QueryParams
     {
         [DefaultValue(20)]
         public int Limit { get; set; } = 20;
-        
+
         [DefaultValue(0)]
         public int Offset { get; set; } = 0;
     }

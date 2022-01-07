@@ -59,7 +59,8 @@ public class ArticleReadRepository : IArticleReadRepository
     {
         var query = Include(request.CurrentUserId);
         query = FilterQuery(request, query);
-        return await ReturnMultipleArticles(query, request.Query.Offset, request.Query.Limit, cancellationToken);
+        return await ReturnMultipleArticles(query, request.Query.Offset,
+            request.Query.Limit, cancellationToken);
     }
 
     public async Task<MultipleArticles> FeedAsync(
@@ -68,7 +69,8 @@ public class ArticleReadRepository : IArticleReadRepository
     {
         var query = Include(request.CurrentUserId);
         query = query.Where(x => x.Author.Followers.Any());
-        return await ReturnMultipleArticles(query, request.Query.Offset, request.Query.Limit, cancellationToken);
+        return await ReturnMultipleArticles(query, request.Query.Offset,
+            request.Query.Limit, cancellationToken);
     }
 
     private static async Task<MultipleArticles> ReturnMultipleArticles(
@@ -78,8 +80,8 @@ public class ArticleReadRepository : IArticleReadRepository
         CancellationToken cancellationToken)
     {
         var articleCount = await query.CountAsync(cancellationToken);
-        var articles = await ToListAsync(query, queryOffset,
-            queryLimit, cancellationToken);
+        var articles = await ToListAsync(query, queryOffset, queryLimit,
+            cancellationToken);
         var result = new MultipleArticles(articles, articleCount);
         return result;
     }
@@ -110,7 +112,6 @@ public class ArticleReadRepository : IArticleReadRepository
         CancellationToken cancellationToken)
     {
         return await query.Select(Expression).OrderBy(x => x.CreatedAt)
-            .Skip(queryOffset).Take(queryLimit)
-            .ToListAsync(cancellationToken);
+            .Skip(queryOffset).Take(queryLimit).ToListAsync(cancellationToken);
     }
 }

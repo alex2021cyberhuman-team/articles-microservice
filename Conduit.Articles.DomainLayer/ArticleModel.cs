@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Conduit.Articles.DomainLayer;
+﻿namespace Conduit.Articles.DomainLayer;
 
 public class ArticleModel
 {

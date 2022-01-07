@@ -23,4 +23,6 @@ public class ArticleDbModel
     public Guid AuthorId { get; set; }
 
     public AuthorDbModel Author { get; set; } = null!;
+
+    public ICollection<AuthorDbModel> Favorites { get; set; } = null!;
 }

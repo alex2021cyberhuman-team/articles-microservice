@@ -4,11 +4,11 @@ using Conduit.Shared.Events.Models.Users.Update;
 
 namespace Conduit.Articles.DataAccessLayer;
 
-public class ArticleConsumerRepository : IAuthorConsumerRepository
+public class AuthorConsumerRepository : IAuthorConsumerRepository
 {
     private readonly ArticlesDbContext _articlesDbContext;
 
-    public ArticleConsumerRepository(
+    public AuthorConsumerRepository(
         ArticlesDbContext articlesDbContext)
     {
         _articlesDbContext = articlesDbContext;
@@ -17,7 +17,7 @@ public class ArticleConsumerRepository : IAuthorConsumerRepository
     public async Task RegisterAsync(
         RegisterUserEventModel model)
     {
-        var authorDbModel = new AuthorDbModel()
+        var authorDbModel = new AuthorDbModel
         {
             Id = model.Id,
             Username = model.Username,
@@ -31,7 +31,7 @@ public class ArticleConsumerRepository : IAuthorConsumerRepository
     public async Task UpdateAsync(
         UpdateUserEventModel model)
     {
-        var authorDbModel = new AuthorDbModel()
+        var authorDbModel = new AuthorDbModel
         {
             Id = model.Id,
             Username = model.Username,
