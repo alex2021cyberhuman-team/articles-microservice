@@ -42,7 +42,7 @@ public class ArticleReadRepository : IArticleReadRepository
             .Include(x => x.Author)
             .ThenInclude(x =>
                 x.Followers.Where(y => y.FollowerId == request.CurrentUserId))
-            .FirstOrDefaultAsync(x => x.Slug == request.Query.Slug,
+            .FirstOrDefaultAsync(x => x.Slug == request.Slug,
                 cancellationToken);
 
         // TODO: MAKE FAVORITES
@@ -98,7 +98,7 @@ public class ArticleReadRepository : IArticleReadRepository
     }
 
     private IQueryable<ArticleDbModel> Include(
-        Guid requestCurrentUserId)
+        Guid? requestCurrentUserId)
     {
         return _context.Article.Include(x => x.Tags).Include(x => x.Author)
             .ThenInclude(x =>

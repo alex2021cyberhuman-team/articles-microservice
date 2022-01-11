@@ -8,18 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3"/>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Conduit.Articles.BusinessLogicLayer\Conduit.Articles.BusinessLogicLayer.csproj"/>
-    <ProjectReference Include="..\Conduit.Articles.DataAccessLayer\Conduit.Articles.DataAccessLayer.csproj"/>
-    <ProjectReference Include="..\Conduit.Articles.DomainLayer\Conduit.Articles.DomainLayer.csproj"/>
-    <ProjectReference Include="..\shared-core\Conduit.Shared\Conduit.Shared.csproj"/>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers"/>
+    <ProjectReference Include="..\Conduit.Articles.BusinessLogicLayer\Conduit.Articles.BusinessLogicLayer.csproj" />
+    <ProjectReference Include="..\Conduit.Articles.DataAccessLayer\Conduit.Articles.DataAccessLayer.csproj" />
+    <ProjectReference Include="..\Conduit.Articles.DomainLayer\Conduit.Articles.DomainLayer.csproj" />
+    <ProjectReference Include="..\shared-core\Conduit.Shared\Conduit.Shared.csproj" />
   </ItemGroup>
 
 </Project>

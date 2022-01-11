@@ -7,14 +7,16 @@ public static class SearchArticles
     public class Request
     {
         public Request(
-            QueryParams query)
+            QueryParams query,
+            Guid? currentUserId)
         {
             Query = query;
+            CurrentUserId = currentUserId;
         }
 
         public QueryParams Query { get; set; }
 
-        public Guid CurrentUserId { get; set; }
+        public Guid? CurrentUserId { get; set; }
     }
 
     public class QueryParams

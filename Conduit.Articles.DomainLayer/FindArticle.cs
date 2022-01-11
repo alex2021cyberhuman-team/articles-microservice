@@ -7,21 +7,16 @@ public static class FindArticle
     public class Request
     {
         public Request(
-            QueryParams query,
-            Guid currentUserId)
+            Guid? currentUserId,
+            string slug)
         {
-            Query = query;
             CurrentUserId = currentUserId;
+            Slug = slug;
         }
 
-        public QueryParams Query { get; set; }
-
-        public Guid CurrentUserId { get; set; }
-    }
-
-    public class QueryParams
-    {
         [Required]
-        public string Slug { get; set; } = string.Empty;
+        public string Slug { get; set; }
+
+        public Guid? CurrentUserId { get; set; }
     }
 }

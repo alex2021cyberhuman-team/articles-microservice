@@ -15,18 +15,14 @@ public static class CreateArticle
     {
         public Request(
             RequestBody body,
-            string currentUsername,
             Guid currentUserId)
         {
             Body = body;
-            CurrentUsername = currentUsername;
             CurrentUserId = currentUserId;
         }
 
         [NestedValidation]
         public RequestBody Body { get; set; }
-
-        public string CurrentUsername { get; set; }
 
         public Guid CurrentUserId { get; set; }
     }

@@ -28,12 +28,13 @@ public class ArticleUpdater : IArticleUpdater
         var singleArticle =
             await _articleWriteRepository.UpdateAsync(article,
                 cancellationToken);
-        await ProduceEvent(singleArticle);
+        await ProduceEvent(singleArticle, article);
         return singleArticle;
     }
     
     private async Task ProduceEvent(
-        SingleArticle singleArticle)
+        SingleArticle singleArticle,
+        UpdateArticle.Request request)
     {
         await _eventProducer.ProduceEventAsync(new()
         {
@@ -44,9 +45,7 @@ public class ArticleUpdater : IArticleUpdater
             TagList = singleArticle.Response.Article.TagList,
             CreatedAt = singleArticle.Response.Article.CreatedAt,
             UpdatedAt = singleArticle.Response.Article.UpdatedAt,
-            AuthorUsername = singleArticle.Response.Article.Author.Username,
-            AuthorBiography = singleArticle.Response.Article.Author.Bio,
-            AuthorImage = singleArticle.Response.Article.Author.Image
+            AuthorId = request.CurrentUserId
         });
     }
 }

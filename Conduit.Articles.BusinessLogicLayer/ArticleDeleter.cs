@@ -30,7 +30,7 @@ public class ArticleDeleter : IArticleDeleter
     {
         await _eventProducer.ProduceEventAsync(new()
         {
-            AuthorUsername = article.CurrentUsername, Slug = article.Slug
+            AuthorId = article.CurrentUserId, Slug = article.Slug
         });
     }
 }

@@ -8,20 +8,16 @@ public static class UpdateArticle
     {
         public Request(
             RequestBody body,
-            string currentUsername,
             string slug,
             Guid currentUserId)
         {
             Body = body;
-            CurrentUsername = currentUsername;
             Slug = slug;
             CurrentUserId = currentUserId;
         }
 
         [NestedValidation]
         public RequestBody Body { get; set; }
-
-        public string CurrentUsername { get; set; }
 
         public string Slug { get; set; }
 
