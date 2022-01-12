@@ -1,4 +1,5 @@
 ﻿using Conduit.Articles.DomainLayer;
+using Conduit.Articles.DomainLayer.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Conduit.Articles.DataAccessLayer;

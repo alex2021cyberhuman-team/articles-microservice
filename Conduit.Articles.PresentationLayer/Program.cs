@@ -1,7 +1,7 @@
-﻿using Conduit.Shared.Events.Models.Users.Register;
-using Conduit.Shared.Events.Models.Users.Update;
+﻿using Conduit.Articles.PresentationLayer;
 using Conduit.Shared.Events.Services.RabbitMQ;
 using Conduit.Shared.Startup;
+using Conduit.Shared.Tokens;
 using Microsoft.IdentityModel.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,11 +15,13 @@ var configuration = builder.Configuration;
 services.AddControllers();
 services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new() { Title = "Conduit.Auth.WebApi", Version = "v1" });
+    c.SwaggerDoc("v1",
+        new() { Title = "Conduit.Person.WebApi", Version = "v1" });
 });
 
-services.AddHealthChecks().Services
+services.AddJwtServices(configuration.GetSection("Jwt").Bind)
     .AddW3CLogging(configuration.GetSection("W3C").Bind).AddHttpClient()
+    .AddHttpContextAccessor()
     .RegisterRabbitMqWithHealthCheck(configuration.GetSection("RabbitMQ").Bind);
 
 #endregion
@@ -28,27 +30,26 @@ var app = builder.Build();
 
 #region AppConfiguration
 
+app.UseExceptionHandler(applicationBuilder =>
+{
+    applicationBuilder.UseMiddleware<ExceptionFilter>();
+});
+
 if (environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI(c =>
         c.SwaggerEndpoint("/swagger/v1/swagger.json",
-            "Conduit.Auth.WebApi v1"));
+            "Conduit.Person.WebApi v1"));
     IdentityModelEventSource.ShowPII = true;
 }
 
 app.UseW3CLogging();
-
-app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseEndpoints(x =>
-{
-    x.MapControllers();
-    x.MapHealthChecks("/health");
-});
+app.MapControllers();
 
 var initializationScope = app.Services.CreateScope();
 

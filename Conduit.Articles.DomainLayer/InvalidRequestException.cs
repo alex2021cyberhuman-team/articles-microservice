@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Conduit.Articles.DomainLayer.Exceptions;
 
 namespace Conduit.Articles.DomainLayer;
 

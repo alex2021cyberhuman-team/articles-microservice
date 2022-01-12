@@ -1,4 +1,4 @@
-﻿namespace Conduit.Articles.DomainLayer;
+﻿namespace Conduit.Articles.DomainLayer.Exceptions;
 
 public class ForbiddenException : ApplicationException
 {
