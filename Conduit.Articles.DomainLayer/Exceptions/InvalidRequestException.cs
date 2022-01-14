@@ -6,10 +6,10 @@ namespace Conduit.Articles.DomainLayer;
 public class InvalidRequestException : BadRequestException
 {
     public InvalidRequestException(
-        ICollection<ValidationResult> validationResults)
+        IEnumerable<ValidationResult> validationResults)
     {
         ValidationResults = validationResults;
     }
 
-    public ICollection<ValidationResult> ValidationResults { get; set; }
+    public IEnumerable<ValidationResult> ValidationResults { get; set; }
 }

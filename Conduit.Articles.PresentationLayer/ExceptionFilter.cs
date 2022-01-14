@@ -1,4 +1,5 @@
-﻿using Conduit.Articles.DomainLayer.Exceptions;
+﻿using Conduit.Articles.DomainLayer;
+using Conduit.Articles.DomainLayer.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -19,9 +20,10 @@ public class ExceptionFilter : IMiddleware
 
         result = contextException switch
         {
-            BadRequestException badRequestException => new
+            InvalidRequestException invalidRequestException => new
                 BadRequestObjectResult(
-                    GetModelStateDictionary(badRequestException)),
+                    GetModelStateDictionary(invalidRequestException)),
+            BadRequestException => new BadRequestResult(),
             ForbiddenException => new ForbidResult(),
             NotFoundException => new NotFoundResult(),
             _ => throw new ArgumentOutOfRangeException(nameof(contextException),
@@ -32,11 +34,11 @@ public class ExceptionFilter : IMiddleware
     }
 
     private static ModelStateDictionary GetModelStateDictionary(
-        BadRequestException badRequestException)
+        InvalidRequestException exception)
     {
         var modelState = new ModelStateDictionary();
 
-        foreach (var validationResult in badRequestException.ValidationResults)
+        foreach (var validationResult in exception.ValidationResults)
         {
             if (!string.IsNullOrWhiteSpace(validationResult.ErrorMessage))
             {
