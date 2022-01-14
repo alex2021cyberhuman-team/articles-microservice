@@ -9,7 +9,7 @@ namespace Conduit.Articles.DataAccessLayer;
 public class ArticleReadRepository : IArticleReadRepository
 {
     private static readonly Expression<Func<ArticleDbModel, ArticleModel>>
-        Expression = x => new()
+        SelectExpression = x => new()
         {
             Slug = x.Slug,
             Title = x.Title,
@@ -18,8 +18,7 @@ public class ArticleReadRepository : IArticleReadRepository
             TagList = x.Tags.Select(y => y.Name).ToHashSet(),
             CreatedAt = x.CreatedAt,
             UpdatedAt = x.UpdatedAt,
-            // TODO: MAKE FAVORITES
-            Favorited = false,
+            Favorited = x.Favoriters.Any(),
             Author = new()
             {
                 Username = x.Author.Username,
@@ -47,10 +46,10 @@ public class ArticleReadRepository : IArticleReadRepository
             .FirstOrDefaultAsync(x => x.Slug == request.Slug,
                 cancellationToken);
 
-        // TODO: MAKE FAVORITES
         var result =
             (article ?? throw new NotFoundException()).MapArticle(
-                article.Author.Followers.Any());
+                article.Author.Followers.Any(),
+                article.Favoriters.Any());
 
         return result;
     }
@@ -102,8 +101,9 @@ public class ArticleReadRepository : IArticleReadRepository
     private IQueryable<ArticleDbModel> Include(
         Guid? requestCurrentUserId)
     {
-        return _context.Article.Include(x => x.Tags).Include(x => x.Author)
-            .ThenInclude(x =>
+        return _context.Article
+            .Include(x => x.Favoriters.Where(y => y.Id == requestCurrentUserId))
+            .Include(x => x.Tags).Include(x => x.Author).ThenInclude(x =>
                 x.Followers.Where(y => y.Id == requestCurrentUserId));
     }
 
@@ -113,7 +113,7 @@ public class ArticleReadRepository : IArticleReadRepository
         int queryLimit,
         CancellationToken cancellationToken)
     {
-        return await query.Select(Expression).OrderBy(x => x.CreatedAt)
+        return await query.Select(SelectExpression).OrderBy(x => x.CreatedAt)
             .Skip(queryOffset).Take(queryLimit).ToListAsync(cancellationToken);
     }
 }
