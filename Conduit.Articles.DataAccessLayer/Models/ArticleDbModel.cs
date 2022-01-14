@@ -1,4 +1,4 @@
-﻿namespace Conduit.Articles.DataAccessLayer;
+﻿namespace Conduit.Articles.DataAccessLayer.Models;
 
 public class ArticleDbModel
 {
@@ -24,5 +24,5 @@ public class ArticleDbModel
 
     public AuthorDbModel Author { get; set; } = null!;
 
-    public ICollection<AuthorDbModel> Favorites { get; set; } = null!;
+    public ICollection<AuthorDbModel> Favoriters { get; set; } = null!;
 }

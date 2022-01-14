@@ -1,4 +1,5 @@
-﻿using Conduit.Articles.DomainLayer;
+﻿using Conduit.Articles.DataAccessLayer.Models;
+using Conduit.Articles.DomainLayer;
 using Conduit.Shared.Events.Models.Users.Register;
 using Conduit.Shared.Events.Models.Users.Update;
 

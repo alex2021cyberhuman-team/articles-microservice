@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using Conduit.Articles.DataAccessLayer.Models;
 using Conduit.Articles.DomainLayer;
 using Conduit.Shared.Events.Models.Favorites;
 using Microsoft.EntityFrameworkCore;
@@ -29,7 +30,7 @@ public class FavoritesConsumerRepository : IFavoritesConsumerRepository
             throw new ArgumentNullException(nameof(article));
         }
 
-        if (article.Favorites.Any())
+        if (article.Favoriters.Any())
         {
             throw new ConstraintException();
         }
@@ -43,7 +44,7 @@ public class FavoritesConsumerRepository : IFavoritesConsumerRepository
             throw new ArgumentNullException(nameof(author));
         }
 
-        article.Favorites.Add(author);
+        article.Favoriters.Add(author);
         article.FavoritesCount += 1;
         await _articlesDbContext.SaveChangesAsync();
         await transaction.CommitAsync();
@@ -63,12 +64,12 @@ public class FavoritesConsumerRepository : IFavoritesConsumerRepository
             throw new ArgumentNullException(nameof(article));
         }
 
-        if (article.Favorites.Any() == false)
+        if (article.Favoriters.Any() == false)
         {
             throw new ConstraintException();
         }
 
-        article.Favorites.Remove(article.Favorites.First());
+        article.Favoriters.Remove(article.Favoriters.First());
         article.FavoritesCount -= 1;
         await _articlesDbContext.SaveChangesAsync();
         await transaction.CommitAsync();
@@ -79,7 +80,7 @@ public class FavoritesConsumerRepository : IFavoritesConsumerRepository
         string slug)
     {
         return await _articlesDbContext.Article
-            .Include(x => x.Favorites.Where(y => y.Id == userId))
+            .Include(x => x.Favoriters.Where(y => y.Id == userId))
             .FirstOrDefaultAsync(x => x.Slug == slug);
     }
 }

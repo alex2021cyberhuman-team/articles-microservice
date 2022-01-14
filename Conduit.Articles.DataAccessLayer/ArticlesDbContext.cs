@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
+using Conduit.Articles.DataAccessLayer.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Conduit.Articles.DataAccessLayer;
 
@@ -19,5 +21,10 @@ public class ArticlesDbContext : DbContext
 
     public DbSet<AuthorDbModel> Author => Set<AuthorDbModel>();
 
-    public DbSet<FollowingDbModel> Following => Set<FollowingDbModel>();
+    protected override void OnModelCreating(
+        ModelBuilder modelBuilder)
+    {
+        modelBuilder.ApplyConfigurationsFromAssembly(
+            Assembly.GetExecutingAssembly());
+    }
 }

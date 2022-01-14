@@ -1,4 +1,5 @@
 ﻿using System.Linq.Expressions;
+using Conduit.Articles.DataAccessLayer.Models;
 using Conduit.Articles.DomainLayer;
 using Conduit.Articles.DomainLayer.Exceptions;
 using Microsoft.EntityFrameworkCore;
@@ -42,7 +43,7 @@ public class ArticleReadRepository : IArticleReadRepository
         var article = await _context.Article.Include(x => x.Tags)
             .Include(x => x.Author)
             .ThenInclude(x =>
-                x.Followers.Where(y => y.FollowerId == request.CurrentUserId))
+                x.Followers.Where(y => y.Id == request.CurrentUserId))
             .FirstOrDefaultAsync(x => x.Slug == request.Slug,
                 cancellationToken);
 
@@ -103,7 +104,7 @@ public class ArticleReadRepository : IArticleReadRepository
     {
         return _context.Article.Include(x => x.Tags).Include(x => x.Author)
             .ThenInclude(x =>
-                x.Followers.Where(y => y.FollowerId == requestCurrentUserId));
+                x.Followers.Where(y => y.Id == requestCurrentUserId));
     }
 
     private static async Task<List<ArticleModel>> ToListAsync(
