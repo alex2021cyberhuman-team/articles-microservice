@@ -10,7 +10,7 @@ public class TagDbModelConfiguration : IEntityTypeConfiguration<TagDbModel>
     {
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id).HasColumnName("tag_id");
-        builder.HasIndex(x => x.Name.ToLower()).IsUnique();
-        builder.HasMany(x => x.Articles).WithMany(x => x.Tags);
+        builder.HasIndex(x => x.Name).IsUnique();
+        builder.HasMany(x => x.Articles).WithMany(x => x.Tags).UsingEntity(x => x.ToTable("tag_article"));
     }
 }
