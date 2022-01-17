@@ -1,4 +1,5 @@
 ﻿using Conduit.Articles.DomainLayer;
+using Conduit.Articles.DomainLayer.Repositories;
 using Conduit.Shared.Events.Models.Favorites;
 using Conduit.Shared.Events.Services;
 

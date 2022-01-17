@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Conduit.Articles.DomainLayer;
+using Conduit.Articles.DomainLayer.Models;
+using Conduit.Articles.DomainLayer.Utilities;
 
 namespace Conduit.Articles.BusinessLogicLayer;
 

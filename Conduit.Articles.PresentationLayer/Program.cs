@@ -1,6 +1,13 @@
 ﻿using Conduit.Articles.BusinessLogicLayer;
 using Conduit.Articles.DataAccessLayer;
+using Conduit.Articles.DataAccessLayer.DbContexts;
+using Conduit.Articles.DataAccessLayer.Repositories;
+using Conduit.Articles.DataAccessLayer.Utilities;
 using Conduit.Articles.DomainLayer;
+using Conduit.Articles.DomainLayer.Handlers;
+using Conduit.Articles.DomainLayer.Models;
+using Conduit.Articles.DomainLayer.Repositories;
+using Conduit.Articles.DomainLayer.Utilities;
 using Conduit.Articles.PresentationLayer;
 using Conduit.Shared.Events.Models.Articles.CreateArticle;
 using Conduit.Shared.Events.Models.Articles.DeleteArticle;
@@ -49,6 +56,7 @@ services.AddJwtServices(configuration.GetSection("Jwt").Bind)
     .AddScoped<IAuthorConsumerRepository, AuthorConsumerRepository>()
     .AddScoped<IFavoritesConsumerRepository, FavoritesConsumerRepository>()
     .AddScoped<IFollowingsConsumerRepository, FollowingsConsumerRepository>()
+    .AddScoped<ITagRepository, TagRepository>()
     .AddScoped<ISlugilizator, Slugilizator>()
     .AddScoped<IValidator<UpdateArticle.Request>,
         UpdateArticleRequestValidator>()

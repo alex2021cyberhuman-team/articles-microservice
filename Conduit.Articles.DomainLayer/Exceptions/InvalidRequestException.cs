@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Conduit.Articles.DomainLayer.Exceptions;
 
-namespace Conduit.Articles.DomainLayer;
+namespace Conduit.Articles.DomainLayer.Exceptions;
 
 public class InvalidRequestException : BadRequestException
 {

@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
 using Conduit.Articles.DomainLayer;
+using Conduit.Articles.DomainLayer.Utilities;
 
 namespace Conduit.Articles.BusinessLogicLayer;
 
