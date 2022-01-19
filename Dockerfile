@@ -14,7 +14,7 @@ ENV CONFIG=$CONFIG
 WORKDIR /src
 COPY ["./Conduit.Articles.PresentationLayer/Conduit.Articles.PresentationLayer.csproj", "Conduit.Articles.PresentationLayer/"]
 COPY ["./Conduit.Articles.BusinessLogicLayer/Conduit.Articles.BusinessLogicLayer.csproj", "Conduit.Articles.BusinessLogicLayer/"]
-COPY ["./shared-core/Conduit.Shared/Conduit.Shared.csproj", "Conduit.Shared/"]
+COPY ["./shared-core/Conduit.Shared/Conduit.Shared.csproj", "./shared-core/Conduit.Shared/"]
 COPY ["./Conduit.Articles.DomainLayer/Conduit.Articles.DomainLayer.csproj", "Conduit.Articles.DomainLayer/"]
 COPY ["./Conduit.Articles.DataAccessLayer/Conduit.Articles.DataAccessLayer.csproj", "Conduit.Articles.DataAccessLayer/"]
 WORKDIR "/src/Conduit.Articles.PresentationLayer/"
