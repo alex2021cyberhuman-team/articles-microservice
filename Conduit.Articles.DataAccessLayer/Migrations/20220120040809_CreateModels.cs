@@ -64,21 +64,21 @@ namespace Conduit.Articles.DataAccessLayer.Migrations
                 name: "author_follower",
                 columns: table => new
                 {
-                    followed_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    follower_id = table.Column<Guid>(type: "uuid", nullable: false)
+                    followeds_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    followers_id = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_author_follower", x => new { x.followed_id, x.follower_id });
+                    table.PrimaryKey("pk_author_follower", x => new { x.followeds_id, x.followers_id });
                     table.ForeignKey(
-                        name: "fk_author_follower_author_followed_id",
-                        column: x => x.followed_id,
+                        name: "fk_author_follower_author_followeds_id",
+                        column: x => x.followeds_id,
                         principalTable: "author",
                         principalColumn: "author_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_author_follower_author_follower_id",
-                        column: x => x.follower_id,
+                        name: "fk_author_follower_author_followers_id",
+                        column: x => x.followers_id,
                         principalTable: "author",
                         principalColumn: "author_id",
                         onDelete: ReferentialAction.Cascade);
@@ -88,21 +88,21 @@ namespace Conduit.Articles.DataAccessLayer.Migrations
                 name: "author_favorite",
                 columns: table => new
                 {
-                    favoriter_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    favorite_id = table.Column<Guid>(type: "uuid", nullable: false)
+                    favoriters_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    favorites_id = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_author_favorite", x => new { x.favoriter_id, x.favorite_id });
+                    table.PrimaryKey("pk_author_favorite", x => new { x.favoriters_id, x.favorites_id });
                     table.ForeignKey(
-                        name: "fk_author_favorite_article_favorite_id",
-                        column: x => x.favorite_id,
+                        name: "fk_author_favorite_article_favorites_id",
+                        column: x => x.favorites_id,
                         principalTable: "article",
                         principalColumn: "article_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_author_favorite_author_favoriter_id",
-                        column: x => x.favoriter_id,
+                        name: "fk_author_favorite_author_favoriters_id",
+                        column: x => x.favoriters_id,
                         principalTable: "author",
                         principalColumn: "author_id",
                         onDelete: ReferentialAction.Cascade);
@@ -112,21 +112,21 @@ namespace Conduit.Articles.DataAccessLayer.Migrations
                 name: "tag_article",
                 columns: table => new
                 {
-                    article_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    tag_id = table.Column<Guid>(type: "uuid", nullable: false)
+                    articles_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    tags_id = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_tag_article", x => new { x.article_id, x.tag_id });
+                    table.PrimaryKey("pk_tag_article", x => new { x.articles_id, x.tags_id });
                     table.ForeignKey(
-                        name: "fk_tag_article_article_article_id",
-                        column: x => x.article_id,
+                        name: "fk_tag_article_article_articles_id",
+                        column: x => x.articles_id,
                         principalTable: "article",
                         principalColumn: "article_id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "fk_tag_article_tag_tag_id",
-                        column: x => x.tag_id,
+                        name: "fk_tag_article_tag_tags_id",
+                        column: x => x.tags_id,
                         principalTable: "tag",
                         principalColumn: "tag_id",
                         onDelete: ReferentialAction.Cascade);
@@ -155,14 +155,14 @@ namespace Conduit.Articles.DataAccessLayer.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_author_favorite_favorite_id",
+                name: "ix_author_favorite_favorites_id",
                 table: "author_favorite",
-                column: "favorite_id");
+                column: "favorites_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_author_follower_follower_id",
+                name: "ix_author_follower_followers_id",
                 table: "author_follower",
-                column: "follower_id");
+                column: "followers_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_tag_name",
@@ -171,9 +171,9 @@ namespace Conduit.Articles.DataAccessLayer.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_tag_article_tag_id",
+                name: "ix_tag_article_tags_id",
                 table: "tag_article",
-                column: "tag_id");
+                column: "tags_id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

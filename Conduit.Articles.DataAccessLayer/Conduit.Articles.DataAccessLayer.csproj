@@ -17,4 +17,8 @@
     <ProjectReference Include="..\Conduit.Articles.DomainLayer\Conduit.Articles.DomainLayer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations" />
+  </ItemGroup>
+
 </Project>
