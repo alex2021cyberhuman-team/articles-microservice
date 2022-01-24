@@ -24,21 +24,21 @@ public class FollowingsConsumerRepository : IFollowingsConsumerRepository
         var followed = await _articlesDbContext.Author
             .Include(x => x.Followers.Where(y => y.Id == model.FollowerId))
             .FirstAsync(x => x.Id == model.FollowedId);
-        
+
         if (followed.Followers.Any())
         {
             throw new InvalidOperationException("Followers already added");
         }
-        
+
         var follower = await _articlesDbContext.Author
             .Include(x => x.Followeds.Where(y => y.Id == model.FollowedId))
             .FirstAsync(x => x.Id == model.FollowerId);
-        
+
         if (follower.Followeds.Any())
         {
             throw new InvalidOperationException("Followeds already added");
         }
-        
+
         followed.Followers.Add(follower);
         follower.Followeds.Add(followed);
         await _articlesDbContext.SaveChangesAsync();
@@ -53,12 +53,12 @@ public class FollowingsConsumerRepository : IFollowingsConsumerRepository
         var followed = await _articlesDbContext.Author
             .Include(x => x.Followers.Where(y => y.Id == model.FollowerId))
             .FirstAsync(x => x.Id == model.FollowedId);
-        
+
         if (followed.Followers.Any() == false)
         {
             throw new InvalidOperationException("Followers not yet added");
         }
-        
+
         followed.Followers.Remove(followed.Followers.First());
         await _articlesDbContext.SaveChangesAsync();
         await transaction.CommitAsync();

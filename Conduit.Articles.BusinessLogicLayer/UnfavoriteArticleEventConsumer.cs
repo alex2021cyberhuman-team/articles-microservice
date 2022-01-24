@@ -5,7 +5,8 @@ using Conduit.Shared.Events.Services;
 
 namespace Conduit.Articles.BusinessLogicLayer;
 
-public class UnfavoriteArticleEventConsumer : IEventConsumer<UnfavoriteArticleEventModel>
+public class
+    UnfavoriteArticleEventConsumer : IEventConsumer<UnfavoriteArticleEventModel>
 {
     private readonly IFavoritesConsumerRepository _favoritesConsumerRepository;
 
@@ -14,7 +15,7 @@ public class UnfavoriteArticleEventConsumer : IEventConsumer<UnfavoriteArticleEv
     {
         _favoritesConsumerRepository = favoritesConsumerRepository;
     }
-    
+
     public async Task ConsumeAsync(
         UnfavoriteArticleEventModel message)
     {

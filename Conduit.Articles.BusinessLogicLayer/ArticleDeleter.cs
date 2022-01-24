@@ -24,7 +24,9 @@ public class ArticleDeleter : IArticleDeleter
         DeleteArticle.Request article,
         CancellationToken cancellationToken)
     {
-        var internalArticleModel = await _articleWriteRepository.DeleteAsync(article, cancellationToken);
+        var internalArticleModel =
+            await _articleWriteRepository.DeleteAsync(article,
+                cancellationToken);
         await ProduceEventAsync(internalArticleModel);
     }
 

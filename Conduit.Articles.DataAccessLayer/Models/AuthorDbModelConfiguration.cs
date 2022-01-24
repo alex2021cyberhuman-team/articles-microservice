@@ -3,7 +3,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Conduit.Articles.DataAccessLayer.Models;
 
-public class AuthorDbModelConfiguration : IEntityTypeConfiguration<AuthorDbModel>
+public class
+    AuthorDbModelConfiguration : IEntityTypeConfiguration<AuthorDbModel>
 {
     public void Configure(
         EntityTypeBuilder<AuthorDbModel> builder)

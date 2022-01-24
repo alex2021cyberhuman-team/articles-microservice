@@ -19,8 +19,7 @@ public class TagRepository : ITagRepository
         CancellationToken cancellationToken)
     {
         var list = await _articlesDbContext.Tag.AsNoTracking()
-            .Select(x => x.Name)
-            .ToListAsync(cancellationToken);
+            .Select(x => x.Name).ToListAsync(cancellationToken);
         var response = new TagList.Response(new() { Tags = list });
         return response;
     }

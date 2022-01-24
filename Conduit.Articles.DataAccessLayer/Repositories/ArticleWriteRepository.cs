@@ -66,10 +66,12 @@ public class ArticleWriteRepository : IArticleWriteRepository
         articleDbModel.UpdatedAt = DateTime.UtcNow;
         articleDbModel.AuthorId = article.CurrentUserId;
         articleDbModel.Body = model.Body ?? articleDbModel.Body;
-        articleDbModel.Description = model.Description ?? articleDbModel.Description;
+        articleDbModel.Description =
+            model.Description ?? articleDbModel.Description;
         articleDbModel.Title = model.Title ?? articleDbModel.Title;
         articleDbModel.Slug = UpdateSlug(model, articleDbModel);
-        articleDbModel.Tags = await UpdateTagsAsync(model, articleDbModel, cancellationToken);
+        articleDbModel.Tags =
+            await UpdateTagsAsync(model, articleDbModel, cancellationToken);
 
         await _context.SaveChangesAsync(cancellationToken);
         await transaction.CommitAsync(cancellationToken);
@@ -80,7 +82,8 @@ public class ArticleWriteRepository : IArticleWriteRepository
         DeleteArticle.Request article,
         CancellationToken cancellationToken = default)
     {
-        await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+        await using var transaction =
+            await _context.Database.BeginTransactionAsync(cancellationToken);
         var removedArticle =
             await FindArticleDbModelAsync(article.Slug, cancellationToken);
         CheckAccess(article.CurrentUserId, removedArticle);

@@ -5,7 +5,8 @@ using Conduit.Shared.Events.Services;
 
 namespace Conduit.Articles.BusinessLogicLayer;
 
-public class FavoriteArticleEventConsumer : IEventConsumer<FavoriteArticleEventModel>
+public class
+    FavoriteArticleEventConsumer : IEventConsumer<FavoriteArticleEventModel>
 {
     private readonly IFavoritesConsumerRepository _favoritesConsumerRepository;
 

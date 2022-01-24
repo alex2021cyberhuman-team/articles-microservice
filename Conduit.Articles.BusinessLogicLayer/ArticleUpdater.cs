@@ -34,7 +34,7 @@ public class ArticleUpdater : IArticleUpdater
         await ProduceEvent(internalArticleModel);
         return new(internalArticleModel);
     }
-    
+
     private async Task ProduceEvent(
         InternalArticleModel article)
     {

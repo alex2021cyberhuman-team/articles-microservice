@@ -22,14 +22,19 @@ public static class ArticleQueryableExtensions
             CreatedAt = x.CreatedAt,
             UpdatedAt = x.UpdatedAt,
             Favorited = x.Favoriters.Any(),
-            Author = new() { Username = x.Author.Username, Bio = x.Author.Bio, Following = x.Author.Followers.Any() }
+            Author = new()
+            {
+                Username = x.Author.Username,
+                Bio = x.Author.Bio,
+                Following = x.Author.Followers.Any()
+            }
         };
 
-    public static IQueryable<ArticleDbModel> IncludeArticles(this IQueryable<ArticleDbModel> source, Guid? userId)
+    public static IQueryable<ArticleDbModel> IncludeArticles(
+        this IQueryable<ArticleDbModel> source,
+        Guid? userId)
     {
-        return source
-            .Include(x => x.Tags)
-            .Include(x => x.Author)
+        return source.Include(x => x.Tags).Include(x => x.Author)
             .ThenInclude(x => x.Followeds.Where(y => y.Id == userId))
             .Include(x => x.Favoriters.Where(y => y.Id == userId));
     }
@@ -71,15 +76,14 @@ public class ArticleReadRepository : IArticleReadRepository
         FindArticle.Request request,
         CancellationToken cancellationToken = default)
     {
-        var article =
-            await _context.Article
-                .IncludeArticles(request.CurrentUserId)
-                .FirstOrDefaultAsync(x => x.Slug == request.Slug,
-                    cancellationToken);
+        var article = await _context.Article
+            .IncludeArticles(request.CurrentUserId)
+            .FirstOrDefaultAsync(x => x.Slug == request.Slug,
+                cancellationToken);
 
         var singleArticle =
-            (article ?? throw new NotFoundException()).MapArticleToSingleArticle(
-                article.Author.Followers.Any(),
+            (article ?? throw new NotFoundException())
+            .MapArticleToSingleArticle(article.Author.Followers.Any(),
                 article.Favoriters.Any());
 
         return singleArticle;
@@ -89,12 +93,8 @@ public class ArticleReadRepository : IArticleReadRepository
         SearchArticles.Request request,
         CancellationToken cancellationToken = default)
     {
-        var query =
-            _context.Article
-                .IncludeArticles(request.CurrentUserId);
-        query =
-            query
-                .FilterArticles(request);
+        var query = _context.Article.IncludeArticles(request.CurrentUserId);
+        query = query.FilterArticles(request);
         return await ReturnMultipleArticles(query, request.Query.Offset,
             request.Query.Limit, cancellationToken);
     }
@@ -103,9 +103,7 @@ public class ArticleReadRepository : IArticleReadRepository
         FeedArticle.Request request,
         CancellationToken cancellationToken = default)
     {
-        var query =
-            _context.Article
-                .IncludeArticles(request.CurrentUserId);
+        var query = _context.Article.IncludeArticles(request.CurrentUserId);
         query = query.Where(x => x.Author.Followers.Any());
         return await ReturnMultipleArticles(query, request.Query.Offset,
             request.Query.Limit, cancellationToken);
@@ -118,7 +116,8 @@ public class ArticleReadRepository : IArticleReadRepository
         CancellationToken cancellationToken)
     {
         var articleCount = await query.CountAsync(cancellationToken);
-        var articles = await query.SelectArticles(queryOffset, queryLimit).ToListAsync(cancellationToken);
+        var articles = await query.SelectArticles(queryOffset, queryLimit)
+            .ToListAsync(cancellationToken);
         var result = new MultipleArticles(articles, articleCount);
         return result;
     }

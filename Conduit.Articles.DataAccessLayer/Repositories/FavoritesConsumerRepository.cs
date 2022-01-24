@@ -23,8 +23,7 @@ public class FavoritesConsumerRepository : IFavoritesConsumerRepository
         await using var transaction =
             await _articlesDbContext.Database.BeginTransactionAsync();
 
-        var article =
-            await FirstOrDefaultAsync(model.UserId, model.ArticleId);
+        var article = await FirstOrDefaultAsync(model.UserId, model.ArticleId);
 
         if (article == null)
         {
@@ -38,7 +37,7 @@ public class FavoritesConsumerRepository : IFavoritesConsumerRepository
 
         var author =
             await _articlesDbContext.Author.FirstOrDefaultAsync(x =>
-                x.Id == model.UserId );
+                x.Id == model.UserId);
 
         if (author == null)
         {
@@ -60,8 +59,7 @@ public class FavoritesConsumerRepository : IFavoritesConsumerRepository
         await using var transaction =
             await _articlesDbContext.Database.BeginTransactionAsync();
 
-        var article =
-            await FirstOrDefaultAsync(model.UserId, model.ArticleId);
+        var article = await FirstOrDefaultAsync(model.UserId, model.ArticleId);
 
         if (article == null)
         {

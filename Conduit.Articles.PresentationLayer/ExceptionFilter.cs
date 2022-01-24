@@ -54,10 +54,12 @@ public class ExceptionFilter : IMiddleware
         HttpContext context,
         RequestDelegate next)
     {
-        var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>() ?? throw new InvalidOperationException("Exception Filter is not set");
-        
-        var handled =
-            OnException(exceptionHandlerPathFeature.Error, out var result);
+        var exceptionHandlerPathFeature =
+            context.Features.Get<IExceptionHandlerPathFeature>() ??
+            throw new InvalidOperationException("Exception Filter is not set");
+
+        var handled = OnException(exceptionHandlerPathFeature.Error,
+            out var result);
         if (handled)
         {
             await result!.ExecuteResultAsync(new()

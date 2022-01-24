@@ -70,14 +70,19 @@ services.AddJwtServices(configuration.GetSection("Jwt").Bind)
     .RegisterProducer<CreateArticleEventModel>()
     .RegisterProducer<DeleteArticleEventModel>()
     .RegisterProducer<UpdateArticleEventModel>()
-    .RegisterConsumer<CreateFollowingEventModel, CreateFollowingEventConsumer>(ConfigureConsumer)
-    .RegisterConsumer<RemoveFollowingEventModel, RemoveFollowingEventConsumer>(ConfigureConsumer)
+    .RegisterConsumer<CreateFollowingEventModel,
+        CreateFollowingEventConsumer>(ConfigureConsumer)
+    .RegisterConsumer<RemoveFollowingEventModel,
+        RemoveFollowingEventConsumer>(ConfigureConsumer)
     .RegisterConsumer<UnfavoriteArticleEventModel,
         UnfavoriteArticleEventConsumer>(ConfigureConsumer)
-    .RegisterConsumer<RegisterUserEventModel, RegisterUserEventConsumer>(ConfigureConsumer)
-    .RegisterConsumer<FavoriteArticleEventModel, FavoriteArticleEventConsumer>(ConfigureConsumer)
-    .RegisterConsumer<UpdateUserEventModel, UpdateUserEventConsumer>(ConfigureConsumer)
-    .AddHealthChecks().AddDbContextCheck<ArticlesDbContext>();
+    .RegisterConsumer<RegisterUserEventModel,
+        RegisterUserEventConsumer>(ConfigureConsumer)
+    .RegisterConsumer<FavoriteArticleEventModel,
+        FavoriteArticleEventConsumer>(ConfigureConsumer)
+    .RegisterConsumer<UpdateUserEventModel,
+        UpdateUserEventConsumer>(ConfigureConsumer).AddHealthChecks()
+    .AddDbContextCheck<ArticlesDbContext>();
 
 #endregion
 
@@ -116,7 +121,8 @@ await initializationScope.InitializeQueuesAsync();
 
 app.Run();
 
-void ConfigureConsumer<T>(RabbitMqSettings<T> options)
+void ConfigureConsumer<T>(
+    RabbitMqSettings<T> options)
 {
     options.Consumer = "articles";
 }

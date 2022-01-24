@@ -41,8 +41,11 @@ public class Slugilizator : ISlugilizator
         ["я"] = "ya"
     };
 
-    private static readonly Regex RemoveInvalidCharactersRegex = new(@"[^a-z0-9\s-]", RegexOptions.Compiled);
-    private static readonly Regex RemoveSpacesRegex = new(@"\s+", RegexOptions.Compiled);
+    private static readonly Regex RemoveInvalidCharactersRegex =
+        new(@"[^a-z0-9\s-]", RegexOptions.Compiled);
+
+    private static readonly Regex RemoveSpacesRegex =
+        new(@"\s+", RegexOptions.Compiled);
 
     public string GetSlug(
         string title)
@@ -74,8 +77,7 @@ public class Slugilizator : ISlugilizator
     {
         var str = ReplaceCharacters(phrase.ToLower());
 
-        str = RemoveInvalidCharactersRegex.Replace(str,
-            string.Empty);
+        str = RemoveInvalidCharactersRegex.Replace(str, string.Empty);
         str = RemoveSpacesRegex.Replace(str, "-");
 
         if (str.Length >= 45)
@@ -84,8 +86,7 @@ public class Slugilizator : ISlugilizator
         }
 
         var number = GenerateNumber();
-        str = str.Insert(str.Length,
-            "-" + number);
+        str = str.Insert(str.Length, "-" + number);
         return str;
     }
 

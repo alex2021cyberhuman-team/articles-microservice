@@ -11,7 +11,7 @@ public static class DeleteArticle
             CurrentUserId = currentUserId;
             Slug = slug;
         }
-        
+
         public Guid CurrentUserId { get; set; }
         public string Slug { get; set; }
     }

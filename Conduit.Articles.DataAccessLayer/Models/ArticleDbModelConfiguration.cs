@@ -14,7 +14,8 @@ public class
         builder.HasIndex(x => x.CreatedAt);
         builder.HasMany(x => x.Favoriters).WithMany(x => x.Favorites)
             .UsingEntity(x => x.ToTable("author_favorite"));
-        builder.HasOne(x => x.Author).WithMany(x => x.Articles).OnDelete(DeleteBehavior.Cascade);
+        builder.HasOne(x => x.Author).WithMany(x => x.Articles)
+            .OnDelete(DeleteBehavior.Cascade);
         builder.Property(x => x.Id).HasColumnName("article_id");
     }
 }
