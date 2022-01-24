@@ -1,5 +1,4 @@
-﻿using Conduit.Articles.DomainLayer;
-using Conduit.Articles.DomainLayer.Handlers;
+﻿using Conduit.Articles.DomainLayer.Handlers;
 using Conduit.Articles.DomainLayer.Models;
 using Conduit.Articles.DomainLayer.Repositories;
 using Conduit.Articles.DomainLayer.Utilities;
@@ -29,27 +28,27 @@ public class ArticleUpdater : IArticleUpdater
         CancellationToken cancellationToken)
     {
         await _validator.ValidateAndThrowAsync(article, cancellationToken);
-        var singleArticle =
+        var internalArticleModel =
             await _articleWriteRepository.UpdateAsync(article,
                 cancellationToken);
-        await ProduceEvent(singleArticle, article);
-        return singleArticle;
+        await ProduceEvent(internalArticleModel);
+        return new(internalArticleModel);
     }
     
     private async Task ProduceEvent(
-        SingleArticle singleArticle,
-        UpdateArticle.Request request)
+        InternalArticleModel article)
     {
         await _eventProducer.ProduceEventAsync(new()
         {
-            Slug = singleArticle.Response.Article.Slug,
-            Title = singleArticle.Response.Article.Title,
-            Description = singleArticle.Response.Article.Description,
-            Body = singleArticle.Response.Article.Body,
-            TagList = singleArticle.Response.Article.TagList,
-            CreatedAt = singleArticle.Response.Article.CreatedAt,
-            UpdatedAt = singleArticle.Response.Article.UpdatedAt,
-            AuthorId = request.CurrentUserId
+            Id = article.Id,
+            Slug = article.Slug,
+            Title = article.Title,
+            Description = article.Description,
+            Body = article.Body,
+            TagList = article.TagList,
+            CreatedAt = article.CreatedAt,
+            UpdatedAt = article.UpdatedAt,
+            AuthorId = article.Author.Id
         });
     }
 }

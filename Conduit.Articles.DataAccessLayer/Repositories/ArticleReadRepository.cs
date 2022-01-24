@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using Conduit.Articles.DataAccessLayer.DbContexts;
 using Conduit.Articles.DataAccessLayer.Models;
 using Conduit.Articles.DataAccessLayer.Utilities;
@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Conduit.Articles.DataAccessLayer.Repositories;
 
-public class ArticleReadRepository : IArticleReadRepository
+public static class ArticleQueryableExtensions
 {
     private static readonly Expression<Func<ArticleDbModel, ArticleModel>>
         SelectExpression = x => new()
@@ -22,14 +22,43 @@ public class ArticleReadRepository : IArticleReadRepository
             CreatedAt = x.CreatedAt,
             UpdatedAt = x.UpdatedAt,
             Favorited = x.Favoriters.Any(),
-            Author = new()
-            {
-                Username = x.Author.Username,
-                Bio = x.Author.Bio,
-                Following = x.Author.Followers.Any()
-            }
+            Author = new() { Username = x.Author.Username, Bio = x.Author.Bio, Following = x.Author.Followers.Any() }
         };
 
+    public static IQueryable<ArticleDbModel> IncludeArticles(this IQueryable<ArticleDbModel> source, Guid? userId)
+    {
+        return source
+            .Include(x => x.Tags)
+            .Include(x => x.Author)
+            .ThenInclude(x => x.Followeds.Where(y => y.Id == userId))
+            .Include(x => x.Favoriters.Where(y => y.Id == userId));
+    }
+
+    public static IQueryable<ArticleModel> SelectArticles(
+        this IQueryable<ArticleDbModel> source,
+        int queryOffset,
+        int queryLimit)
+    {
+        return source.Select(SelectExpression).OrderBy(x => x.CreatedAt)
+            .Skip(queryOffset).Take(queryLimit);
+    }
+
+    public static IQueryable<ArticleDbModel> FilterArticles(
+        this IQueryable<ArticleDbModel> source,
+        SearchArticles.Request request)
+    {
+        return source.Where(x =>
+            (request.Query.Author == null ||
+             x.Author.Username == request.Query.Author) &&
+            (request.Query.Tag == null ||
+             x.Tags.Select(y => y.Name).Contains(request.Query.Tag)) &&
+            (request.Query.Favorited == null ||
+             x.Favoriters.Any(y => y.Username == request.Query.Favorited)));
+    }
+}
+
+public class ArticleReadRepository : IArticleReadRepository
+{
     private readonly ArticlesDbContext _context;
 
     public ArticleReadRepository(
@@ -42,27 +71,30 @@ public class ArticleReadRepository : IArticleReadRepository
         FindArticle.Request request,
         CancellationToken cancellationToken = default)
     {
-        var article = await _context.Article.Include(x => x.Tags)
-            .Include(x => x.Author)
-            .ThenInclude(x =>
-                x.Followers.Where(y => y.Id == request.CurrentUserId))
-            .FirstOrDefaultAsync(x => x.Slug == request.Slug,
-                cancellationToken);
+        var article =
+            await _context.Article
+                .IncludeArticles(request.CurrentUserId)
+                .FirstOrDefaultAsync(x => x.Slug == request.Slug,
+                    cancellationToken);
 
-        var result =
-            (article ?? throw new NotFoundException()).MapArticle(
+        var singleArticle =
+            (article ?? throw new NotFoundException()).MapArticleToSingleArticle(
                 article.Author.Followers.Any(),
                 article.Favoriters.Any());
 
-        return result;
+        return singleArticle;
     }
 
     public async Task<MultipleArticles> SearchAsync(
         SearchArticles.Request request,
         CancellationToken cancellationToken = default)
     {
-        var query = Include(request.CurrentUserId);
-        query = FilterQuery(request, query);
+        var query =
+            _context.Article
+                .IncludeArticles(request.CurrentUserId);
+        query =
+            query
+                .FilterArticles(request);
         return await ReturnMultipleArticles(query, request.Query.Offset,
             request.Query.Limit, cancellationToken);
     }
@@ -71,7 +103,9 @@ public class ArticleReadRepository : IArticleReadRepository
         FeedArticle.Request request,
         CancellationToken cancellationToken = default)
     {
-        var query = Include(request.CurrentUserId);
+        var query =
+            _context.Article
+                .IncludeArticles(request.CurrentUserId);
         query = query.Where(x => x.Author.Followers.Any());
         return await ReturnMultipleArticles(query, request.Query.Offset,
             request.Query.Limit, cancellationToken);
@@ -84,39 +118,8 @@ public class ArticleReadRepository : IArticleReadRepository
         CancellationToken cancellationToken)
     {
         var articleCount = await query.CountAsync(cancellationToken);
-        var articles = await ToListAsync(query, queryOffset, queryLimit,
-            cancellationToken);
+        var articles = await query.SelectArticles(queryOffset, queryLimit).ToListAsync(cancellationToken);
         var result = new MultipleArticles(articles, articleCount);
         return result;
-    }
-
-    private static IQueryable<ArticleDbModel> FilterQuery(
-        SearchArticles.Request request,
-        IQueryable<ArticleDbModel> query)
-    {
-        return query.Where(x =>
-            (request.Query.Author == null ||
-             x.Author.Username == request.Query.Author) &&
-            (request.Query.Tag == null ||
-             x.Tags.Select(y => y.Name).Contains(request.Query.Tag)));
-    }
-
-    private IQueryable<ArticleDbModel> Include(
-        Guid? requestCurrentUserId)
-    {
-        return _context.Article
-            .Include(x => x.Favoriters.Where(y => y.Id == requestCurrentUserId))
-            .Include(x => x.Tags).Include(x => x.Author).ThenInclude(x =>
-                x.Followers.Where(y => y.Id == requestCurrentUserId));
-    }
-
-    private static async Task<List<ArticleModel>> ToListAsync(
-        IQueryable<ArticleDbModel> query,
-        int queryOffset,
-        int queryLimit,
-        CancellationToken cancellationToken)
-    {
-        return await query.Select(SelectExpression).OrderBy(x => x.CreatedAt)
-            .Skip(queryOffset).Take(queryLimit).ToListAsync(cancellationToken);
     }
 }

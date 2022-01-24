@@ -24,16 +24,16 @@ public class ArticleDeleter : IArticleDeleter
         DeleteArticle.Request article,
         CancellationToken cancellationToken)
     {
-        await _articleWriteRepository.DeleteAsync(article, cancellationToken);
-        await ProduceEventAsync(article);
+        var internalArticleModel = await _articleWriteRepository.DeleteAsync(article, cancellationToken);
+        await ProduceEventAsync(internalArticleModel);
     }
 
     private async Task ProduceEventAsync(
-        DeleteArticle.Request article)
+        InternalArticleModel article)
     {
         await _eventProducer.ProduceEventAsync(new()
         {
-            AuthorId = article.CurrentUserId, Slug = article.Slug
+            Id = article.Id, UserId = article.Author.Id
         });
     }
 }

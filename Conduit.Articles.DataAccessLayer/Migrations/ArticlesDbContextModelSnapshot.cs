@@ -86,7 +86,7 @@ namespace Conduit.Articles.DataAccessLayer.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("article_id");
 
-                    b.Property<Guid>("AuthorId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uuid")
                         .HasColumnName("author_id");
 
@@ -125,7 +125,7 @@ namespace Conduit.Articles.DataAccessLayer.Migrations
                     b.HasKey("Id")
                         .HasName("pk_article");
 
-                    b.HasIndex("AuthorId")
+                    b.HasIndex("UserId")
                         .HasDatabaseName("ix_article_author_id");
 
                     b.HasIndex("CreatedAt")
@@ -245,7 +245,7 @@ namespace Conduit.Articles.DataAccessLayer.Migrations
                 {
                     b.HasOne("Conduit.Articles.DataAccessLayer.Models.AuthorDbModel", "Author")
                         .WithMany("Articles")
-                        .HasForeignKey("AuthorId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_article_author_author_id");

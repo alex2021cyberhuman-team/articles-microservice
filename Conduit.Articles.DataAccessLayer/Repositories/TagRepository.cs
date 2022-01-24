@@ -1,4 +1,4 @@
-﻿using Conduit.Articles.DataAccessLayer.DbContexts;
+using Conduit.Articles.DataAccessLayer.DbContexts;
 using Conduit.Articles.DomainLayer.Models;
 using Conduit.Articles.DomainLayer.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +21,7 @@ public class TagRepository : ITagRepository
         var list = await _articlesDbContext.Tag.AsNoTracking()
             .Select(x => x.Name)
             .ToListAsync(cancellationToken);
-        var response = new TagList.Response { Body = new() { Tags = list } };
+        var response = new TagList.Response(new() { Tags = list });
         return response;
     }
 }

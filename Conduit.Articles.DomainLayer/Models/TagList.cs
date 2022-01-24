@@ -1,9 +1,14 @@
-﻿namespace Conduit.Articles.DomainLayer.Models;
+namespace Conduit.Articles.DomainLayer.Models;
 
 public static class TagList
 {
     public class Response
     {
+        public Response(ResponseBody body)
+        {
+            Body = body;
+        }
+
         public ResponseBody Body { get; set; }
     }
     

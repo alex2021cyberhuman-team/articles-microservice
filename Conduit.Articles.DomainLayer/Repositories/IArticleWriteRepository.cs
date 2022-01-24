@@ -1,18 +1,18 @@
-﻿using Conduit.Articles.DomainLayer.Models;
+using Conduit.Articles.DomainLayer.Models;
 
 namespace Conduit.Articles.DomainLayer.Repositories;
 
 public interface IArticleWriteRepository
 {
-    Task<SingleArticle> CreateAsync(
+    Task<InternalArticleModel> CreateAsync(
         CreateArticle.Request article,
         CancellationToken cancellationToken = default);
 
-    Task<SingleArticle> UpdateAsync(
-        UpdateArticle.Request article,
+    Task<InternalArticleModel> UpdateAsync(
+        UpdateArticle.Request request,
         CancellationToken cancellationToken = default);
 
-    Task DeleteAsync(
+    Task<InternalArticleModel> DeleteAsync(
         DeleteArticle.Request article,
         CancellationToken cancellationToken = default);
 }

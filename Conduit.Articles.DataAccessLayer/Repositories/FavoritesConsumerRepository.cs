@@ -24,7 +24,7 @@ public class FavoritesConsumerRepository : IFavoritesConsumerRepository
             await _articlesDbContext.Database.BeginTransactionAsync();
 
         var article =
-            await FirstOrDefaultAsync(model.CurrentUserId, model.ArticleSlug);
+            await FirstOrDefaultAsync(model.UserId, model.ArticleId);
 
         if (article == null)
         {
@@ -38,7 +38,7 @@ public class FavoritesConsumerRepository : IFavoritesConsumerRepository
 
         var author =
             await _articlesDbContext.Author.FirstOrDefaultAsync(x =>
-                x.Id == model.CurrentUserId);
+                x.Id == model.UserId );
 
         if (author == null)
         {
@@ -46,7 +46,10 @@ public class FavoritesConsumerRepository : IFavoritesConsumerRepository
         }
 
         article.Favoriters.Add(author);
-        article.FavoritesCount += 1;
+        // TODO: Make it with sql function and replace with functions all ef core
+        await _articlesDbContext.Database.ExecuteSqlRawAsync(
+            @"update article set favorites_count = favorites_count + 1 where article_id = {0}",
+            article.Id);
         await _articlesDbContext.SaveChangesAsync();
         await transaction.CommitAsync();
     }
@@ -58,7 +61,7 @@ public class FavoritesConsumerRepository : IFavoritesConsumerRepository
             await _articlesDbContext.Database.BeginTransactionAsync();
 
         var article =
-            await FirstOrDefaultAsync(model.CurrentUserId, model.ArticleSlug);
+            await FirstOrDefaultAsync(model.UserId, model.ArticleId);
 
         if (article == null)
         {
@@ -71,17 +74,19 @@ public class FavoritesConsumerRepository : IFavoritesConsumerRepository
         }
 
         article.Favoriters.Remove(article.Favoriters.First());
-        article.FavoritesCount -= 1;
+        await _articlesDbContext.Database.ExecuteSqlRawAsync(
+            @"update article set favorites_count = favorites_count - 1 where article_id = {0}",
+            article.Id);
         await _articlesDbContext.SaveChangesAsync();
         await transaction.CommitAsync();
     }
 
     private async Task<ArticleDbModel?> FirstOrDefaultAsync(
         Guid userId,
-        string slug)
+        Guid articleId)
     {
         return await _articlesDbContext.Article
             .Include(x => x.Favoriters.Where(y => y.Id == userId))
-            .FirstOrDefaultAsync(x => x.Slug == slug);
+            .FirstOrDefaultAsync(x => x.Id == articleId);
     }
 }

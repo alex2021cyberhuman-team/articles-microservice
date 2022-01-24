@@ -1,4 +1,6 @@
-﻿using Conduit.Articles.BusinessLogicLayer;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Conduit.Articles.BusinessLogicLayer;
 using Conduit.Articles.DataAccessLayer;
 using Conduit.Articles.DataAccessLayer.DbContexts;
 using Conduit.Articles.DataAccessLayer.Repositories;
@@ -68,13 +70,13 @@ services.AddJwtServices(configuration.GetSection("Jwt").Bind)
     .RegisterProducer<CreateArticleEventModel>()
     .RegisterProducer<DeleteArticleEventModel>()
     .RegisterProducer<UpdateArticleEventModel>()
-    .RegisterConsumer<CreateFollowingEventModel, CreateFollowingEventConsumer>()
-    .RegisterConsumer<RemoveFollowingEventModel, RemoveFollowingEventConsumer>()
+    .RegisterConsumer<CreateFollowingEventModel, CreateFollowingEventConsumer>(ConfigureConsumer)
+    .RegisterConsumer<RemoveFollowingEventModel, RemoveFollowingEventConsumer>(ConfigureConsumer)
     .RegisterConsumer<UnfavoriteArticleEventModel,
-        UnfavoriteArticleEventConsumer>()
-    .RegisterConsumer<RegisterUserEventModel, RegisterUserEventConsumer>()
-    .RegisterConsumer<FavoriteArticleEventModel, FavoriteArticleEventConsumer>()
-    .RegisterConsumer<UpdateUserEventModel, UpdateUserEventConsumer>()
+        UnfavoriteArticleEventConsumer>(ConfigureConsumer)
+    .RegisterConsumer<RegisterUserEventModel, RegisterUserEventConsumer>(ConfigureConsumer)
+    .RegisterConsumer<FavoriteArticleEventModel, FavoriteArticleEventConsumer>(ConfigureConsumer)
+    .RegisterConsumer<UpdateUserEventModel, UpdateUserEventConsumer>(ConfigureConsumer)
     .AddHealthChecks().AddDbContextCheck<ArticlesDbContext>();
 
 #endregion
@@ -113,3 +115,8 @@ await initializationScope.InitializeQueuesAsync();
 #endregion
 
 app.Run();
+
+void ConfigureConsumer<T>(RabbitMqSettings<T> options)
+{
+    options.Consumer = "articles";
+}

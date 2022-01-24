@@ -1,15 +1,14 @@
-﻿using System.Text;
+using System.Text;
 using System.Text.RegularExpressions;
-using Conduit.Articles.DomainLayer;
 using Conduit.Articles.DomainLayer.Utilities;
 
 namespace Conduit.Articles.BusinessLogicLayer;
 
 public class Slugilizator : ISlugilizator
 {
-    private static readonly Dictionary<string, string> charReplacements = new()
+    private static readonly Dictionary<string, string> CharReplacements = new()
     {
-        ["а"] = "а",
+        ["а"] = "a",
         ["б"] = "b",
         ["в"] = "v",
         ["г"] = "g",
@@ -42,6 +41,9 @@ public class Slugilizator : ISlugilizator
         ["я"] = "ya"
     };
 
+    private static readonly Regex RemoveInvalidCharactersRegex = new(@"[^a-z0-9\s-]", RegexOptions.Compiled);
+    private static readonly Regex RemoveSpacesRegex = new(@"\s+", RegexOptions.Compiled);
+
     public string GetSlug(
         string title)
     {
@@ -56,11 +58,10 @@ public class Slugilizator : ISlugilizator
         {
             var oldString = char.ToLower(builder[i]).ToString();
             var contains =
-                charReplacements.TryGetValue(oldString, out var replacement);
+                CharReplacements.TryGetValue(oldString, out var replacement);
             if (contains)
             {
-                Console.WriteLine($"Replace {oldString} to {replacement}");
-                builder.Replace(oldString, replacement, i, replacement.Length);
+                builder.Replace(oldString, replacement, i, replacement!.Length);
                 i += replacement.Length - 1;
             }
         }
@@ -73,18 +74,28 @@ public class Slugilizator : ISlugilizator
     {
         var str = ReplaceCharacters(phrase.ToLower());
 
-        str = Regex.Replace(str, @"[^a-z0-9\s-]",
-            ""); // invalid chars          
-        str = Regex.Replace(str, @"\s+", " ").Trim();
+        str = RemoveInvalidCharactersRegex.Replace(str,
+            string.Empty);
+        str = RemoveSpacesRegex.Replace(str, "-");
 
         if (str.Length >= 45)
         {
-            str = str[..45].Trim(); // cut and trim it  
+            str = str[..45].Trim();
         }
 
-        str = Regex.Replace(str, @"\s", "-"); // hyphens  
+        var number = GenerateNumber();
         str = str.Insert(str.Length,
-            "-" + DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+            "-" + number);
         return str;
+    }
+
+    private static string GenerateNumber()
+    {
+        var random = new Random();
+
+        var number =
+            $"{DateTimeOffset.UtcNow:yyyyMMddHHmmss}{Environment.CurrentManagedThreadId % 1000:d3}{Thread.GetDomainID() % 1000:d3}{random.Next(0, 100000):d5}";
+
+        return number;
     }
 }

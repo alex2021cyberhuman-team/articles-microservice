@@ -1,4 +1,4 @@
-﻿using Conduit.Articles.DataAccessLayer.DbContexts;
+using Conduit.Articles.DataAccessLayer.DbContexts;
 using Conduit.Articles.DataAccessLayer.Models;
 using Conduit.Articles.DataAccessLayer.Utilities;
 using Conduit.Articles.DomainLayer.Exceptions;
@@ -22,7 +22,7 @@ public class ArticleWriteRepository : IArticleWriteRepository
         _slugilizator = slugilizator;
     }
 
-    public async Task<SingleArticle> CreateAsync(
+    public async Task<InternalArticleModel> CreateAsync(
         CreateArticle.Request article,
         CancellationToken cancellationToken = default)
     {
@@ -49,51 +49,45 @@ public class ArticleWriteRepository : IArticleWriteRepository
         _context.Add(articleDbModel);
         await _context.SaveChangesAsync(cancellationToken);
         await transaction.CommitAsync(cancellationToken);
-        return articleDbModel.MapArticle();
+        return articleDbModel.MapArticleToInternalArticleModel();
     }
 
-    public async Task<SingleArticle> UpdateAsync(
+    public async Task<InternalArticleModel> UpdateAsync(
         UpdateArticle.Request article,
         CancellationToken cancellationToken = default)
     {
-        var oldArticleDbModel =
-            await FindArticleDbModelAsync(article.Slug, cancellationToken);
-        CheckAccess(article.CurrentUserId, oldArticleDbModel);
-
         await using var transaction =
             await _context.Database.BeginTransactionAsync(cancellationToken);
-        var model = article.Body.Article;
-
-        var tags =
-            await UpdateTagsAsync(model, oldArticleDbModel, cancellationToken);
-
-        var articleDbModel = new ArticleDbModel
-        {
-            UpdatedAt = DateTime.UtcNow,
-            AuthorId = article.CurrentUserId,
-            Body = model.Body ?? oldArticleDbModel.Body,
-            Description =
-                model.Description ?? oldArticleDbModel.Description,
-            Title = model.Title ?? oldArticleDbModel.Title,
-            Slug = UpdateSlug(model, oldArticleDbModel),
-            Tags = tags
-        };
-
-        _context.Update(articleDbModel);
-        await _context.SaveChangesAsync(cancellationToken);
-        await transaction.CommitAsync(cancellationToken);
-        return articleDbModel.MapArticle();
-    }
-
-    public async Task DeleteAsync(
-        DeleteArticle.Request article,
-        CancellationToken cancellationToken = default)
-    {
         var articleDbModel =
             await FindArticleDbModelAsync(article.Slug, cancellationToken);
         CheckAccess(article.CurrentUserId, articleDbModel);
-        _context.Remove(articleDbModel);
+        var model = article.Body.Article;
+
+        articleDbModel.UpdatedAt = DateTime.UtcNow;
+        articleDbModel.AuthorId = article.CurrentUserId;
+        articleDbModel.Body = model.Body ?? articleDbModel.Body;
+        articleDbModel.Description = model.Description ?? articleDbModel.Description;
+        articleDbModel.Title = model.Title ?? articleDbModel.Title;
+        articleDbModel.Slug = UpdateSlug(model, articleDbModel);
+        articleDbModel.Tags = await UpdateTagsAsync(model, articleDbModel, cancellationToken);
+
         await _context.SaveChangesAsync(cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
+        return articleDbModel.MapArticleToInternalArticleModel();
+    }
+
+    public async Task<InternalArticleModel> DeleteAsync(
+        DeleteArticle.Request article,
+        CancellationToken cancellationToken = default)
+    {
+        await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
+        var removedArticle =
+            await FindArticleDbModelAsync(article.Slug, cancellationToken);
+        CheckAccess(article.CurrentUserId, removedArticle);
+        _context.Remove(removedArticle);
+        await _context.SaveChangesAsync(cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
+        return removedArticle.MapArticleToInternalArticleModel();
     }
 
     private static void CheckAccess(
@@ -111,7 +105,9 @@ public class ArticleWriteRepository : IArticleWriteRepository
         CancellationToken cancellationToken)
     {
         var item = await _context.Article.Include(x => x.Tags)
+            .Include(x => x.Author)
             .FirstOrDefaultAsync(x => x.Slug == articleSlug, cancellationToken);
+
         if (item is null)
         {
             throw new NotFoundException();
