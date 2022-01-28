@@ -1,6 +1,6 @@
 ﻿using Conduit.Articles.DomainLayer;
 using Conduit.Articles.DomainLayer.Repositories;
-using Conduit.Shared.Events.Models.Favorites;
+using Conduit.Shared.Events.Models.Likes.Unfavorite;
 using Conduit.Shared.Events.Services;
 
 namespace Conduit.Articles.BusinessLogicLayer;

@@ -1,4 +1,5 @@
-﻿using Conduit.Shared.Events.Models.Favorites;
+﻿using Conduit.Shared.Events.Models.Likes.Favorite;
+using Conduit.Shared.Events.Models.Likes.Unfavorite;
 
 namespace Conduit.Articles.DomainLayer.Repositories;
 

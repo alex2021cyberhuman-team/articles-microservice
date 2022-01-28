@@ -2,7 +2,8 @@
 using Conduit.Articles.DataAccessLayer.DbContexts;
 using Conduit.Articles.DataAccessLayer.Models;
 using Conduit.Articles.DomainLayer.Repositories;
-using Conduit.Shared.Events.Models.Favorites;
+using Conduit.Shared.Events.Models.Likes.Favorite;
+using Conduit.Shared.Events.Models.Likes.Unfavorite;
 using Microsoft.EntityFrameworkCore;
 
 namespace Conduit.Articles.DataAccessLayer.Repositories;
