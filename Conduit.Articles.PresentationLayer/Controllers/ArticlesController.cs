@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using Conduit.Articles.DomainLayer;
 using Conduit.Articles.DomainLayer.Handlers;
 using Conduit.Articles.DomainLayer.Models;
 using Conduit.Articles.DomainLayer.Repositories;

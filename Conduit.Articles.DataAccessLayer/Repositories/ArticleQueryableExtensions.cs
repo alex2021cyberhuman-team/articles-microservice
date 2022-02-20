@@ -14,7 +14,7 @@ public static class ArticleQueryableExtensions
             Title = x.Title,
             Description = x.Description,
             Body = x.Body,
-            TagList = x.Tags.Select(y => y.Name).ToHashSet(),
+            TagList = x.Tags.Select(y => y.Name).OrderBy(y => y).ToHashSet(),
             CreatedAt = x.CreatedAt,
             UpdatedAt = x.UpdatedAt,
             Favorited = x.Favoriters.Any(),
@@ -30,8 +30,9 @@ public static class ArticleQueryableExtensions
         this IQueryable<ArticleDbModel> source,
         Guid? userId)
     {
-        return source.Include(x => x.Tags).Include(x => x.Author)
-            .ThenInclude(x => x.Followeds.Where(y => y.Id == userId))
+        return source.Include(x => x.Tags)
+            .Include(x => x.Author)
+            .ThenInclude(x => x.Followers.Where(y => y.Id == userId))
             .Include(x => x.Favoriters.Where(y => y.Id == userId));
     }
 

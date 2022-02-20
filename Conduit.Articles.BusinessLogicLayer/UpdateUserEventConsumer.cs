@@ -1,5 +1,4 @@
-﻿using Conduit.Articles.DomainLayer;
-using Conduit.Articles.DomainLayer.Repositories;
+﻿using Conduit.Articles.DomainLayer.Repositories;
 using Conduit.Shared.Events.Models.Users.Update;
 using Conduit.Shared.Events.Services;
 

@@ -1,11 +1,7 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Conduit.Articles.BusinessLogicLayer;
-using Conduit.Articles.DataAccessLayer;
 using Conduit.Articles.DataAccessLayer.DbContexts;
 using Conduit.Articles.DataAccessLayer.Repositories;
 using Conduit.Articles.DataAccessLayer.Utilities;
-using Conduit.Articles.DomainLayer;
 using Conduit.Articles.DomainLayer.Handlers;
 using Conduit.Articles.DomainLayer.Models;
 using Conduit.Articles.DomainLayer.Repositories;
@@ -23,6 +19,7 @@ using Conduit.Shared.Events.Models.Users.Update;
 using Conduit.Shared.Events.Services.RabbitMQ;
 using Conduit.Shared.Startup;
 using Conduit.Shared.Tokens;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
 
@@ -38,7 +35,7 @@ services.AddControllers();
 services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1",
-        new() { Title = "Conduit.Person.WebApi", Version = "v1" });
+        new() { Title = "Conduit.Articles.PresentationLayer", Version = "v1" });
 });
 
 services.AddJwtServices(configuration.GetSection("Jwt").Bind)
@@ -82,7 +79,9 @@ services.AddJwtServices(configuration.GetSection("Jwt").Bind)
     .RegisterConsumer<FavoriteArticleEventModel,
         FavoriteArticleEventConsumer>(ConfigureConsumer)
     .RegisterConsumer<UpdateUserEventModel,
-        UpdateUserEventConsumer>(ConfigureConsumer).AddHealthChecks()
+        UpdateUserEventConsumer>(ConfigureConsumer)
+    .AddSingleton<ExceptionFilter>()
+    .AddHealthChecks()
     .AddDbContextCheck<ArticlesDbContext>();
 
 #endregion
@@ -91,19 +90,12 @@ var app = builder.Build();
 
 #region AppConfiguration
 
-app.UseExceptionHandler(applicationBuilder =>
-{
-    applicationBuilder.UseMiddleware<ExceptionFilter>();
-});
-
 if (environment.IsDevelopment())
 {
+    IdentityModelEventSource.ShowPII = true;
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
-        c.SwaggerEndpoint("/swagger/v1/swagger.json",
-            "Conduit.Person.WebApi v1"));
-    IdentityModelEventSource.ShowPII = true;
+    app.UseExceptionFilter();
 }
 
 app.UseW3CLogging();

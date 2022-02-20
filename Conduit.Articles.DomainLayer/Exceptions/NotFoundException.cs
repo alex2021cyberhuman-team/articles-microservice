@@ -1,5 +1,5 @@
-﻿namespace Conduit.Articles.DomainLayer.Exceptions;
+namespace Conduit.Articles.DomainLayer.Exceptions;
 
-public class NotFoundException : ApplicationException
+public class NotFoundException : BusinessLayerException
 {
 }
