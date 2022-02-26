@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using Conduit.Articles.DataAccessLayer.Models;
+﻿using Conduit.Articles.DataAccessLayer.Models;
 using Conduit.Articles.DomainLayer.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,42 +6,39 @@ namespace Conduit.Articles.DataAccessLayer.Repositories;
 
 public static class ArticleQueryableExtensions
 {
-    private static readonly Expression<Func<ArticleDbModel, ArticleModel>>
-        SelectExpression = x => new()
-        {
-            Slug = x.Slug,
-            Title = x.Title,
-            Description = x.Description,
-            Body = x.Body,
-            TagList = x.Tags.Select(y => y.Name).OrderBy(y => y).ToHashSet(),
-            CreatedAt = x.CreatedAt,
-            UpdatedAt = x.UpdatedAt,
-            Favorited = x.Favoriters.Any(),
-            Author = new()
-            {
-                Username = x.Author.Username,
-                Bio = x.Author.Bio,
-                Following = x.Author.Followers.Any()
-            }
-        };
-
     public static IQueryable<ArticleDbModel> IncludeArticles(
-        this IQueryable<ArticleDbModel> source,
-        Guid? userId)
+        this IQueryable<ArticleDbModel> source)
     {
-        return source.Include(x => x.Tags)
-            .Include(x => x.Author)
-            .ThenInclude(x => x.Followers.Where(y => y.Id == userId))
-            .Include(x => x.Favoriters.Where(y => y.Id == userId));
+        return source.Include(x => x.Tags).Include(x => x.Author);
     }
 
     public static IQueryable<ArticleModel> SelectArticles(
         this IQueryable<ArticleDbModel> source,
         int queryOffset,
-        int queryLimit)
+        int queryLimit,
+        Guid? userId)
     {
-        return source.Select(SelectExpression).OrderBy(x => x.CreatedAt)
-            .Skip(queryOffset).Take(queryLimit);
+        return source.Select(x => new ArticleModel
+        {
+            Slug = x.Slug,
+            Title = x.Title,
+            Description = x.Description,
+            Body = x.Body,
+            TagList =
+                x.Tags.Select(y => y.Name).OrderBy(y => y).ToHashSet(),
+            CreatedAt = x.CreatedAt,
+            UpdatedAt = x.UpdatedAt,
+            Favorited =
+                userId.HasValue && x.Favoriters.Any(y => y.Id == userId),
+            FavoritesCount = x.FavoritesCount,
+            Author = new()
+            {
+                Username = x.Author.Username,
+                Bio = x.Author.Bio,
+                Following = userId.HasValue &&
+                            x.Author.Followers.Any(y => y.Id == userId)
+            }
+        }).OrderBy(x => x.CreatedAt).Skip(queryOffset).Take(queryLimit);
     }
 
     public static IQueryable<ArticleDbModel> FilterArticles(

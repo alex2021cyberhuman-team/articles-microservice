@@ -22,8 +22,7 @@ public class ArticleReadRepository : IArticleReadRepository
         FindArticle.Request request,
         CancellationToken cancellationToken = default)
     {
-        var article = await _context.Article
-            .IncludeArticles(request.CurrentUserId)
+        var article = await _context.Article.IncludeArticles()
             .FirstOrDefaultAsync(x => x.Slug == request.Slug,
                 cancellationToken);
 
@@ -39,30 +38,33 @@ public class ArticleReadRepository : IArticleReadRepository
         SearchArticles.Request request,
         CancellationToken cancellationToken = default)
     {
-        var query = _context.Article.IncludeArticles(request.CurrentUserId);
+        var query = _context.Article.IncludeArticles();
         query = query.FilterArticles(request);
         return await ReturnMultipleArticles(query, request.Query.Offset,
-            request.Query.Limit, cancellationToken);
+            request.Query.Limit, request.CurrentUserId, cancellationToken);
     }
 
     public async Task<MultipleArticles> FeedAsync(
         FeedArticle.Request request,
         CancellationToken cancellationToken = default)
     {
-        var query = _context.Article.IncludeArticles(request.CurrentUserId);
-        query = query.Where(x => x.Author.Followers.Any());
+        var query = _context.Article.IncludeArticles();
+        query = query.Where(x =>
+            x.Author.Followers.Any(y => y.Id == request.CurrentUserId));
         return await ReturnMultipleArticles(query, request.Query.Offset,
-            request.Query.Limit, cancellationToken);
+            request.Query.Limit, request.CurrentUserId, cancellationToken);
     }
 
     private static async Task<MultipleArticles> ReturnMultipleArticles(
         IQueryable<ArticleDbModel> query,
         int queryOffset,
         int queryLimit,
+        Guid? userId,
         CancellationToken cancellationToken)
     {
         var articleCount = await query.CountAsync(cancellationToken);
-        var articles = await query.SelectArticles(queryOffset, queryLimit)
+        var articles = await query
+            .SelectArticles(queryOffset, queryLimit, userId)
             .ToListAsync(cancellationToken);
         var result = new MultipleArticles(articles, articleCount);
         return result;

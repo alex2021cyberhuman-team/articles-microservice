@@ -47,7 +47,9 @@ services.AddJwtServices(configuration.GetSection("Jwt").Bind)
         }
 
         optionsBuilder.UseSnakeCaseNamingConvention()
-            .UseNpgsql(configuration.GetConnectionString("Articles"));
+            .UseNpgsql(configuration.GetConnectionString("Articles"), 
+            contextOptionsBuilder => contextOptionsBuilder
+            .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
     }).AddScoped<IArticleCreator, ArticleCreator>()
     .AddScoped<IArticleDeleter, ArticleDeleter>()
     .AddScoped<IArticleReadRepository, ArticleReadRepository>()
@@ -98,6 +100,9 @@ if (environment.IsDevelopment())
     app.UseExceptionFilter();
 }
 
+app.UseRouting();
+app.UseCors(options =>
+    options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 app.UseW3CLogging();
 app.UseAuthentication();
 app.UseAuthorization();
