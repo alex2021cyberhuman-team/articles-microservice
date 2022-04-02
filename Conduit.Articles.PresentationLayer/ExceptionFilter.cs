@@ -1,6 +1,6 @@
+using System.Net;
 using Conduit.Articles.DomainLayer.Exceptions;
-
-using Microsoft.AspNetCore.Diagnostics;
+using Conduit.Shared.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -8,6 +8,57 @@ namespace Conduit.Articles.PresentationLayer;
 
 public class ExceptionFilter : IMiddleware
 {
+    public async Task InvokeAsync(
+        HttpContext context,
+        RequestDelegate next)
+    {
+        var logger = context.RequestServices
+            .GetRequiredService<ILogger<ExceptionFilter>>();
+        try
+        {
+            await next(context);
+        }
+        catch (ForbiddenException exception)
+        {
+            logger.LogWarning(exception, "Catch ForbiddenException while processing request");
+            var result = new ForbidResult();
+            await result.ExecuteResultAsync(new()
+            {
+                HttpContext = context, RouteData = context.GetRouteData()
+            });
+        }
+        catch (InvalidRequestException exception)
+        {
+            logger.LogWarning(exception, "Catch InvalidRequestException while processing request");
+            var result = new ObjectResult(new ConduitCamelCaseSerializableError(GetModelStateDictionary(exception)))
+            {
+                StatusCode = (int)HttpStatusCode.UnprocessableEntity
+            };
+            await result.ExecuteResultAsync(new()
+            {
+                HttpContext = context, RouteData = context.GetRouteData()
+            });
+        }
+        catch (BadRequestException exception)
+        {
+            logger.LogWarning(exception, "Catch BadRequestException while processing request");
+            var result = new BadRequestResult();
+            await result.ExecuteResultAsync(new()
+            {
+                HttpContext = context, RouteData = context.GetRouteData()
+            });
+        }
+        catch (NotFoundException exception)
+        {
+            logger.LogWarning(exception, "Catch NotFoundException while processing request");
+            var result = new NotFoundResult();
+            await result.ExecuteResultAsync(new()
+            {
+                HttpContext = context, RouteData = context.GetRouteData()
+            });
+        }
+    }
+
     private static ModelStateDictionary GetModelStateDictionary(
         InvalidRequestException exception)
     {
@@ -23,58 +74,5 @@ public class ExceptionFilter : IMiddleware
         }
 
         return modelState;
-    }
-
-    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
-    {
-        try
-        {
-            await next(context);
-        }
-        catch (ForbiddenException)
-        {
-            var result = new ForbidResult();
-            await result.ExecuteResultAsync(new()
-            {
-                HttpContext = context,
-                RouteData = context.GetRouteData()
-            });
-        }
-        catch (InvalidRequestException exception)
-        {
-            var result = new BadRequestObjectResult(
-                GetModelStateDictionary(exception));
-            await result.ExecuteResultAsync(new()
-            {
-                HttpContext = context,
-                RouteData = context.GetRouteData()
-            });
-        }
-        catch (BadRequestException)
-        {
-            var result = new BadRequestResult();
-            await result.ExecuteResultAsync(new()
-            {
-                HttpContext = context,
-                RouteData = context.GetRouteData()
-            });
-        }
-        catch (NotFoundException)
-        {
-            var result = new NotFoundResult();
-            await result.ExecuteResultAsync(new()
-            {
-                HttpContext = context,
-                RouteData = context.GetRouteData()
-            });
-        }
-    }
-}
-
-public static class ExceptionFilterMiddleware
-{
-    public static IApplicationBuilder UseExceptionFilter(this IApplicationBuilder applicationBuilder)
-    {
-        return applicationBuilder.UseMiddleware<ExceptionFilter>();
     }
 }

@@ -1,3 +1,4 @@
+using System.Globalization;
 using Conduit.Articles.BusinessLogicLayer;
 using Conduit.Articles.DataAccessLayer.DbContexts;
 using Conduit.Articles.DataAccessLayer.Repositories;
@@ -7,6 +8,7 @@ using Conduit.Articles.DomainLayer.Models;
 using Conduit.Articles.DomainLayer.Repositories;
 using Conduit.Articles.DomainLayer.Utilities;
 using Conduit.Articles.PresentationLayer;
+using Conduit.Articles.PresentationLayer.Resources;
 using Conduit.Shared.Events.Models.Articles.CreateArticle;
 using Conduit.Shared.Events.Models.Articles.DeleteArticle;
 using Conduit.Shared.Events.Models.Articles.UpdateArticle;
@@ -17,6 +19,7 @@ using Conduit.Shared.Events.Models.Profiles.RemoveFollowing;
 using Conduit.Shared.Events.Models.Users.Register;
 using Conduit.Shared.Events.Models.Users.Update;
 using Conduit.Shared.Events.Services.RabbitMQ;
+using Conduit.Shared.Localization;
 using Conduit.Shared.Startup;
 using Conduit.Shared.Tokens;
 using Conduit.Shared.Validation;
@@ -30,28 +33,33 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var environment = builder.Environment;
 var configuration = builder.Configuration;
+var supportedCultures = new List<CultureInfo> { new("ru"), new("en") };
 
-services.AddControllers()
-    .RegisterValidateModelAttribute();
+services.AddControllers().Localize<SharedResource>(supportedCultures);
 services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1",
         new() { Title = "Conduit.Articles.PresentationLayer", Version = "v1" });
 });
 
-services.AddJwtServices(configuration.GetSection("Jwt").Bind)
-    .AddDbContext<ArticlesDbContext>(optionsBuilder =>
-    {
-        if (environment.IsDevelopment())
-        {
-            optionsBuilder.EnableDetailedErrors().EnableSensitiveDataLogging();
-        }
 
-        optionsBuilder.UseSnakeCaseNamingConvention()
-            .UseNpgsql(configuration.GetConnectionString("Articles"), 
-            contextOptionsBuilder => contextOptionsBuilder
-            .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
-    }).AddScoped<IArticleCreator, ArticleCreator>()
+services.AddJwtServices(configuration.GetSection("Jwt").Bind)
+    .DisableDefaultModelValidation()
+    .AddDbContext<ArticlesDbContext>(
+        optionsBuilder =>
+        {
+            if (environment.IsDevelopment())
+            {
+                optionsBuilder.EnableDetailedErrors()
+                    .EnableSensitiveDataLogging();
+            }
+
+            optionsBuilder.UseSnakeCaseNamingConvention().UseNpgsql(
+                configuration.GetConnectionString("Articles"),
+                contextOptionsBuilder => contextOptionsBuilder
+                    .UseQuerySplittingBehavior(
+                        QuerySplittingBehavior.SplitQuery));
+        }).AddScoped<IArticleCreator, ArticleCreator>()
     .AddScoped<IArticleDeleter, ArticleDeleter>()
     .AddScoped<IArticleReadRepository, ArticleReadRepository>()
     .AddScoped<IArticleUpdater, ArticleUpdater>()
@@ -83,8 +91,7 @@ services.AddJwtServices(configuration.GetSection("Jwt").Bind)
         FavoriteArticleEventConsumer>(ConfigureConsumer)
     .RegisterConsumer<UpdateUserEventModel,
         UpdateUserEventConsumer>(ConfigureConsumer)
-    .AddSingleton<ExceptionFilter>()
-    .AddHealthChecks()
+    .AddSingleton<ExceptionFilter>().AddHealthChecks()
     .AddDbContextCheck<ArticlesDbContext>();
 
 #endregion
@@ -105,6 +112,7 @@ app.UseRouting();
 app.UseCors(options =>
     options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 app.UseW3CLogging();
+app.UseRequestLocalization();
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -120,7 +128,7 @@ await initializationScope.InitializeQueuesAsync();
 
 app.Run();
 
-void ConfigureConsumer<T>(
+static void ConfigureConsumer<T>(
     RabbitMqSettings<T> options)
 {
     options.Consumer = "articles";

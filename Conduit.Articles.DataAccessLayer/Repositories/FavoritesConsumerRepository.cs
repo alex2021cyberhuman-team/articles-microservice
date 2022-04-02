@@ -24,26 +24,16 @@ public class FavoritesConsumerRepository : IFavoritesConsumerRepository
         await using var transaction =
             await _articlesDbContext.Database.BeginTransactionAsync();
 
-        var article = await FirstOrDefaultAsync(model.UserId, model.ArticleId);
-
-        if (article == null)
-        {
-            throw new ArgumentNullException(nameof(article));
-        }
-
-        if (article.Favoriters.Any())
+        var article = await FirstAsync(model.UserId, model.ArticleId);
+        
+        if (article!.Favoriters.Any())
         {
             throw new ConstraintException();
         }
 
         var author =
-            await _articlesDbContext.Author.FirstOrDefaultAsync(x =>
+            await _articlesDbContext.Author.FirstAsync(x =>
                 x.Id == model.UserId);
-
-        if (author == null)
-        {
-            throw new ArgumentNullException(nameof(author));
-        }
 
         article.Favoriters.Add(author);
         // TODO: Make it with sql function and replace with functions all ef core
@@ -60,12 +50,7 @@ public class FavoritesConsumerRepository : IFavoritesConsumerRepository
         await using var transaction =
             await _articlesDbContext.Database.BeginTransactionAsync();
 
-        var article = await FirstOrDefaultAsync(model.UserId, model.ArticleId);
-
-        if (article == null)
-        {
-            throw new ArgumentNullException(nameof(article));
-        }
+        var article = await FirstAsync(model.UserId, model.ArticleId);
 
         if (article.Favoriters.Any() == false)
         {
@@ -80,12 +65,12 @@ public class FavoritesConsumerRepository : IFavoritesConsumerRepository
         await transaction.CommitAsync();
     }
 
-    private async Task<ArticleDbModel?> FirstOrDefaultAsync(
+    private async Task<ArticleDbModel> FirstAsync(
         Guid userId,
         Guid articleId)
     {
         return await _articlesDbContext.Article
             .Include(x => x.Favoriters.Where(y => y.Id == userId))
-            .FirstOrDefaultAsync(x => x.Id == articleId);
+            .FirstAsync(x => x.Id == articleId);
     }
 }

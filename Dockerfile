@@ -31,4 +31,4 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Conduit.Articles.PresentationLayer.dll"]
-HEALTHCHECK --retries=10 CMD curl --fail http://localhost/health || exit
+HEALTHCHECK --timeout=120s --retries=120 CMD curl --fail http://localhost/health || exit

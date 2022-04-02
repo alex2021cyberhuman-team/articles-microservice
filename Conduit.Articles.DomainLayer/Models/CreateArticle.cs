@@ -38,6 +38,7 @@ public static class CreateArticle
         [Required]
         public string Body { get; set; } = string.Empty;
 
+        [Required]
         public HashSet<string> TagList { get; set; } = new();
     }
 }

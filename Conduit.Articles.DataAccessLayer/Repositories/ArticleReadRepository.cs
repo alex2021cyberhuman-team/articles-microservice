@@ -22,13 +22,26 @@ public class ArticleReadRepository : IArticleReadRepository
         FindArticle.Request request,
         CancellationToken cancellationToken = default)
     {
-        var article = await _context.Article.IncludeArticles()
+        var article = await _context.Article.Include(x => x.Tags)
+            .Include(x => x.Author)
+            .ThenInclude(x =>
+                x.Followers.Where(follower =>
+                    follower.Id == request.CurrentUserId))
+            .Include(x =>
+                x.Favoriters.Where(favoriter =>
+                    favoriter.Id == request.CurrentUserId))
             .FirstOrDefaultAsync(x => x.Slug == request.Slug,
                 cancellationToken);
 
+        if (article is null)
+        {
+            throw new NotFoundException();
+        }
+
+        Console.WriteLine(string.Join(",", article.Author.Followers));
+        Console.WriteLine(string.Join(",", article.Favoriters));
         var singleArticle =
-            (article ?? throw new NotFoundException())
-            .MapArticleToSingleArticle(article.Author.Followers.Any(),
+            article.MapArticleToSingleArticle(article.Author.Followers.Any(),
                 article.Favoriters.Any());
 
         return singleArticle;

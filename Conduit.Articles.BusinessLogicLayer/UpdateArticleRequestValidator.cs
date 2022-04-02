@@ -1,17 +1,22 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Conduit.Articles.DomainLayer.Models;
-using Conduit.Articles.DomainLayer.Utilities;
+using Conduit.Shared.Validation;
+using FluentValidation;
 
 namespace Conduit.Articles.BusinessLogicLayer;
 
-public class UpdateArticleRequestValidator : IValidator<UpdateArticle.Request>
+public class UpdateArticleRequestValidator :
+    AbstractValidator<UpdateArticle.Request>,
+    DomainLayer.Utilities.IValidator<UpdateArticle.Request>
 {
-    public Task<ICollection<ValidationResult>> ValidateAsync(
-        UpdateArticle.Request entityToValidate,
-        CancellationToken cancellationToken = default)
+    async Task<IEnumerable<ValidationResult>>
+        DomainLayer.Utilities.IValidator<UpdateArticle.Request>.ValidateAsync(
+            UpdateArticle.Request entityToValidate,
+            CancellationToken cancellationToken)
     {
-        var results = new List<ValidationResult>();
-        entityToValidate.ValidateObject(results);
-        return Task.FromResult<ICollection<ValidationResult>>(results);
+        var fluentValidationResult =
+            await ValidateAsync(entityToValidate, cancellationToken);
+        var validation = fluentValidationResult.ToValidation();
+        return validation;
     }
 }
