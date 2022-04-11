@@ -1,4 +1,4 @@
-﻿using Conduit.Articles.DataAccessLayer.DbContexts;
+using Conduit.Articles.DataAccessLayer.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

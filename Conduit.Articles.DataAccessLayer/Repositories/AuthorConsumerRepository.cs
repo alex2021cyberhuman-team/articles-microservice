@@ -1,4 +1,4 @@
-﻿using Conduit.Articles.DataAccessLayer.DbContexts;
+using Conduit.Articles.DataAccessLayer.DbContexts;
 using Conduit.Articles.DataAccessLayer.Models;
 using Conduit.Articles.DomainLayer.Repositories;
 using Conduit.Shared.Events.Models.Users.Register;

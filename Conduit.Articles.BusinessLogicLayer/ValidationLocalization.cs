@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Localization;
 
 namespace Conduit.Articles.BusinessLogicLayer;
 

@@ -1,4 +1,4 @@
-﻿using Conduit.Articles.DataAccessLayer.DbContexts;
+using Conduit.Articles.DataAccessLayer.DbContexts;
 using Conduit.Articles.DomainLayer.Repositories;
 using Conduit.Shared.Events.Models.Profiles.CreateFollowing;
 using Conduit.Shared.Events.Models.Profiles.RemoveFollowing;

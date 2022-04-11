@@ -1,4 +1,4 @@
-﻿using Conduit.Articles.DomainLayer.Exceptions;
+using Conduit.Articles.DomainLayer.Exceptions;
 
 namespace Conduit.Articles.DomainLayer.Utilities;
 

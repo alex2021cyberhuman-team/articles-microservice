@@ -1,4 +1,4 @@
-﻿namespace Conduit.Articles.DomainLayer.Utilities;
+namespace Conduit.Articles.DomainLayer.Utilities;
 
 public interface ISlugilizator
 {

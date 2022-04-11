@@ -1,4 +1,4 @@
-﻿namespace Conduit.Articles.PresentationLayer;
+namespace Conduit.Articles.PresentationLayer;
 
 public static class ExceptionFilterMiddleware
 {

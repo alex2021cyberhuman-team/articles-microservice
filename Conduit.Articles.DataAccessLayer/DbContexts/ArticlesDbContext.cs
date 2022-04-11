@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Conduit.Articles.DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
 

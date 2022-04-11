@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using Conduit.Articles.DomainLayer.Models;
 using Conduit.Shared.Validation;
 using FluentValidation;

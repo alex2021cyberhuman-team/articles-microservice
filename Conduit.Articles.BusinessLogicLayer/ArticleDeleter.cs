@@ -1,4 +1,4 @@
-﻿using Conduit.Articles.DomainLayer.Handlers;
+using Conduit.Articles.DomainLayer.Handlers;
 using Conduit.Articles.DomainLayer.Models;
 using Conduit.Articles.DomainLayer.Repositories;
 using Conduit.Shared.Events.Models.Articles.DeleteArticle;
@@ -34,7 +34,8 @@ public class ArticleDeleter : IArticleDeleter
     {
         await _eventProducer.ProduceEventAsync(new()
         {
-            Id = article.Id, UserId = article.Author.Id
+            Id = article.Id,
+            UserId = article.Author.Id
         });
     }
 }

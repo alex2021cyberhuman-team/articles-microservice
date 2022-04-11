@@ -1,4 +1,4 @@
-﻿using Conduit.Articles.DataAccessLayer.Models;
+using Conduit.Articles.DataAccessLayer.Models;
 using Conduit.Articles.DomainLayer.Models;
 using Microsoft.EntityFrameworkCore;
 

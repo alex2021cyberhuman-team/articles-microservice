@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using Conduit.Articles.DomainLayer.Models;
 using Conduit.Articles.DomainLayer.Repositories;
 using Microsoft.AspNetCore.Mvc;

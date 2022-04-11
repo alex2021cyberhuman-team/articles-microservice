@@ -1,4 +1,4 @@
-﻿namespace Conduit.Articles.PresentationLayer.Resources;
+namespace Conduit.Articles.PresentationLayer.Resources;
 
 internal class SharedResource
 {

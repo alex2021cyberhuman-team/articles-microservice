@@ -1,4 +1,4 @@
-﻿namespace Conduit.Articles.DomainLayer.Models;
+namespace Conduit.Articles.DomainLayer.Models;
 
 public static class DeleteArticle
 {

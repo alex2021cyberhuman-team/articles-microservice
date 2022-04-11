@@ -1,4 +1,4 @@
-﻿namespace Conduit.Articles.DataAccessLayer.Models;
+namespace Conduit.Articles.DataAccessLayer.Models;
 
 public class TagDbModel
 {

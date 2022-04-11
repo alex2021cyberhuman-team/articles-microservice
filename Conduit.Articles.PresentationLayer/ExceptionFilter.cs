@@ -24,7 +24,8 @@ public class ExceptionFilter : IMiddleware
             var result = new ForbidResult();
             await result.ExecuteResultAsync(new()
             {
-                HttpContext = context, RouteData = context.GetRouteData()
+                HttpContext = context,
+                RouteData = context.GetRouteData()
             });
         }
         catch (InvalidRequestException exception)
@@ -36,7 +37,8 @@ public class ExceptionFilter : IMiddleware
             };
             await result.ExecuteResultAsync(new()
             {
-                HttpContext = context, RouteData = context.GetRouteData()
+                HttpContext = context,
+                RouteData = context.GetRouteData()
             });
         }
         catch (BadRequestException exception)
@@ -45,7 +47,8 @@ public class ExceptionFilter : IMiddleware
             var result = new BadRequestResult();
             await result.ExecuteResultAsync(new()
             {
-                HttpContext = context, RouteData = context.GetRouteData()
+                HttpContext = context,
+                RouteData = context.GetRouteData()
             });
         }
         catch (NotFoundException exception)
@@ -54,7 +57,8 @@ public class ExceptionFilter : IMiddleware
             var result = new NotFoundResult();
             await result.ExecuteResultAsync(new()
             {
-                HttpContext = context, RouteData = context.GetRouteData()
+                HttpContext = context,
+                RouteData = context.GetRouteData()
             });
         }
     }

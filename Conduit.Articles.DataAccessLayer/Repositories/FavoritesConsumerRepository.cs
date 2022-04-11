@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using Conduit.Articles.DataAccessLayer.DbContexts;
 using Conduit.Articles.DataAccessLayer.Models;
 using Conduit.Articles.DomainLayer.Repositories;
@@ -25,7 +25,7 @@ public class FavoritesConsumerRepository : IFavoritesConsumerRepository
             await _articlesDbContext.Database.BeginTransactionAsync();
 
         var article = await FirstAsync(model.UserId, model.ArticleId);
-        
+
         if (article!.Favoriters.Any())
         {
             throw new ConstraintException();

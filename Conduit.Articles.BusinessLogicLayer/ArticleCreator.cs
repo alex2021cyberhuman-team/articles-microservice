@@ -1,4 +1,4 @@
-﻿using Conduit.Articles.DomainLayer.Handlers;
+using Conduit.Articles.DomainLayer.Handlers;
 using Conduit.Articles.DomainLayer.Models;
 using Conduit.Articles.DomainLayer.Repositories;
 using Conduit.Articles.DomainLayer.Utilities;
