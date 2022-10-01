@@ -8,7 +8,6 @@ using Conduit.Articles.DomainLayer.Models;
 using Conduit.Articles.DomainLayer.Repositories;
 using Conduit.Articles.DomainLayer.Utilities;
 using Conduit.Articles.PresentationLayer;
-using Conduit.Articles.PresentationLayer.Resources;
 using Conduit.Shared.Events.Models.Articles.CreateArticle;
 using Conduit.Shared.Events.Models.Articles.DeleteArticle;
 using Conduit.Shared.Events.Models.Articles.UpdateArticle;
@@ -22,7 +21,7 @@ using Conduit.Shared.Events.Services.RabbitMQ;
 using Conduit.Shared.Localization;
 using Conduit.Shared.Startup;
 using Conduit.Shared.Tokens;
-using Conduit.Shared.Validations;
+using Conduit.Shared.Validation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
 

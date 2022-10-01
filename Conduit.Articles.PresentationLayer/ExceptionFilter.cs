@@ -1,6 +1,6 @@
 using System.Net;
 using Conduit.Articles.DomainLayer.Exceptions;
-using Conduit.Shared.Validations;
+using Conduit.Shared.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 

@@ -1,4 +1,4 @@
-using Conduit.Shared.Validations;
+using Conduit.Shared.Validation;
 
 namespace Conduit.Articles.DomainLayer.Models;
 

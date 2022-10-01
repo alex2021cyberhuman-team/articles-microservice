@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Conduit.Articles.DomainLayer.Models;
-using Conduit.Shared.Validations;
+using Conduit.Shared.Validation;
 using FluentValidation;
 using Microsoft.Extensions.Localization;
 
